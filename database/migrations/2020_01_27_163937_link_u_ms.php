@@ -4,7 +4,7 @@ use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
 
-class TestUsers extends Migration
+class LinkUMs extends Migration
 {
     /**
      * Run the migrations.
@@ -13,13 +13,9 @@ class TestUsers extends Migration
      */
     public function up()
     {
-        Schema::create('test_users', function (Blueprint $table) {
-            $table->bigIncrements('id');
-            $table->string('name',25);
-            $table->string('nickname',50);
-            $table->string('openid',100)->unique();
-            $table->string('password',100);
-            $table->string('token',100);
+        Schema::create('link_u_ms', function (Blueprint $table) {
+            $table->integer('rid')->foreign('rid')->references('rid')->on('r_users');
+            $table->integer('meid')->foreign('meid')->references('meid')->on('r_medals');
             $table->timestamps();
         });
     }
@@ -31,6 +27,6 @@ class TestUsers extends Migration
      */
     public function down()
     {
-        Schema::dropIfExists('test_users');
+        Schema::dropIfExists('link_u_ms');
     }
 }
