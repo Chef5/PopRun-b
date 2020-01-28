@@ -25,7 +25,7 @@ Route::prefix('main')->group(function () {
         return var_dump($request);
     });
     //用户授权注册
-    Route::post('/wxAuth', 'RUsersController@create');
+    Route::post('/wxAuth', 'RUsersController@index');
 });
 
 /**

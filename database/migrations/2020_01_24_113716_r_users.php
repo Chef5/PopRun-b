@@ -15,7 +15,7 @@ class RUsers extends Migration
     {
         Schema::create('r_users', function (Blueprint $table) {
             $table->increments('rid', 10);
-            $table->string('openid', 50);
+            $table->string('openid', 50)->unique();
             $table->string('nickname', 20)->nullable();
             $table->string('sex', 1)->nullable();
             $table->string('img', 200)->nullable();
