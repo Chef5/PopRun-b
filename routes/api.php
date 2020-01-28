@@ -25,7 +25,7 @@ Route::prefix('main')->group(function () {
         return var_dump($request);
     });
     //用户授权注册
-    Route::post('/wxAuth', 'RUsersController@index');
+    Route::post('/wxAuth', 'RUsersController@regster');
 });
 
 /**
@@ -60,8 +60,10 @@ Route::prefix('pub')->group(function () {
  */
 Route::prefix('user')->group(function () {
     Route::get('/', function(){
-        return "用户接口暂未开发完成";
+        return "token认证暂未开发完成";
     })->middleware('userAuth');
+    //用户授权注册
+    Route::post('/getUser', 'RUsersController@getUser');
 });
 
 /**
