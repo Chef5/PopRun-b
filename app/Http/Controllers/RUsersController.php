@@ -90,4 +90,24 @@ class RUsersController extends Controller
             return returnData(false, '缺少openid或rid', null);
         }
     }
+
+    /**
+     * 注销账户
+     */
+    public function doUnset(Request $request){
+        if ($request->has('openid') || $request->has('rid')) {
+            try {
+                if ($request->has('openid')) {
+                    RUsers::where('openid', $request->openid)->delete();
+                }else{
+                    RUsers::where('rid', $request->rid)->delete();
+                }
+                return returnData(true, "操作成功", null);
+            } catch (\Throwable $th) {
+                return returnData(false, $th->errorInfo[2], null);
+            }
+        }else{
+            return returnData(false, '缺少openid或rid', null);
+        }
+    }
 }

@@ -66,6 +66,8 @@ Route::prefix('user')->group(function () {
     Route::post('/getUser', 'RUsersController@getUser');
     //修改个人信息
     Route::post('/doUpdate', 'RUsersController@doUpdate');
+    // 注销账号
+    Route::post('/doUnset', 'RUsersController@doUnset');
 });
 
 /**
