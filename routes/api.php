@@ -62,8 +62,10 @@ Route::prefix('user')->group(function () {
     Route::get('/', function(){
         return "token认证暂未开发完成";
     })->middleware('userAuth');
-    //用户授权注册
+    //获取个人信息
     Route::post('/getUser', 'RUsersController@getUser');
+    //修改个人信息
+    Route::post('/doUpdate', 'RUsersController@doUpdate');
 });
 
 /**
