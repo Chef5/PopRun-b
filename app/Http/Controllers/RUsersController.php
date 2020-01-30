@@ -31,22 +31,15 @@ class RUsersController extends Controller
      */
     public function getUser(Request $request){
         if ($request->has('openid') || $request->has('rid')) {
-            $user = new RUsers();
             if ($request->has('openid')) {
                 try {
-                    $user->fillable(array_keys($request->all()));
-                    $user->fill($request->all());
-                    $user->save();
-                    return returnData(true, '操作成功', RUsers::where('rid', $user->id)->first());
+                    return returnData(true, '操作成功', RUsers::where('openid', $request->openid)->first());
                 } catch (\Throwable $th) {
                     return returnData(false, $th->errorInfo[2], null);
                 }
             }else{
                 try {
-                    $user->fillable(array_keys($request->all()));
-                    $user->fill($request->all());
-                    $user->save();
-                    return returnData(true, '操作成功', RUsers::where('rid', $user->id)->first());
+                    return returnData(true, '操作成功', RUsers::where('rid', $request->rid)->first());
                 } catch (\Throwable $th) {
                     return returnData(false, $th->errorInfo[2], null);
                 }

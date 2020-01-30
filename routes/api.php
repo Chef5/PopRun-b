@@ -26,6 +26,8 @@ Route::prefix('main')->group(function () {
     });
     //用户授权注册
     Route::post('/wxAuth', 'RUsersController@regster');
+    // 图片上传
+    Route::post('/uploadImg', 'PublicController@uploadImg');
 });
 
 /**
