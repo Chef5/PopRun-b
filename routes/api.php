@@ -46,6 +46,7 @@ Route::prefix('moments')->group(function () {
     Route::get('/', function(){
         return "动态接口暂未开发完成";
     });
+    Route::post('/doMoment', 'MomentsController@doMoment');
 });
 
 /**
