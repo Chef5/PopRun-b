@@ -5,9 +5,11 @@ namespace App\Http\Controllers;
 use Illuminate\Http\Request;
 use Image;
 use Validator;
+use App\RHonors;
 
 class PublicController extends Controller
 {
+    // 图片上传
     public function uploadImg(Request $request){
         $inputData = $request->all();
         $rules = [
@@ -53,5 +55,13 @@ class PublicController extends Controller
             return returnData(false, $th->errorInfo[2], null);
         }
     }
-    
+    // 获取称号列表
+    public function getHonorAll(){
+        $honors = RHonors::get();
+        $data = [];
+        foreach($honors as $honor){
+            array_push($data, ['name'=>$honor->name, 'desc'=>$honor->desc]);
+        }
+        return returnData(true, "操作成功", $data);
+    }
 }

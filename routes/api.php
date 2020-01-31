@@ -28,6 +28,8 @@ Route::prefix('main')->group(function () {
     Route::post('/wxAuth', 'RUsersController@regster');
     // 图片上传
     Route::post('/uploadImg', 'PublicController@uploadImg');
+    // 获取称号列表
+    Route::get('/getHonorAll', 'PublicController@getHonorAll');
 });
 
 /**
