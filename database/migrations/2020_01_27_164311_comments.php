@@ -17,7 +17,7 @@ class Comments extends Migration
             $table->bigIncrements('coid');
             $table->integer('rid')->foreign('rid')->references('rid')->on('r_users');
             $table->bigInteger('moid')->foreign('moid')->references('moid')->on('r_moments');
-            $table->string('coment', 200)->comment('评论');
+            $table->string('comment', 200)->comment('评论');
             $table->timestamps();
         });
     }

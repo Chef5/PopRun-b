@@ -48,7 +48,10 @@ Route::prefix('moments')->group(function () {
     Route::get('/', function(){
         return "动态接口暂未开发完成";
     });
+    // 发布动态
     Route::post('/doMoment', 'MomentsController@doMoment');
+    // 发表评论
+    Route::post('/doComment', 'MomentsController@doComment');
 });
 
 /**

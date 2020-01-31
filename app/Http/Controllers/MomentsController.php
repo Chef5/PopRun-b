@@ -63,4 +63,28 @@ class MomentsController extends Controller
             return returnData(false, "缺rid", null);
         }
     }
+
+    // 发表评论
+    public function doComment(Request $request){
+        if($request->has('rid') && $request->has('moid')){
+            $comment = new Comments();
+            $comment->fill([
+                'rid' => $request->rid,
+                'moid' => $request->moid,
+                'comment' => $request->comment
+            ]);
+            try {
+                if($comment->save()){
+                    // 返回数据
+                    $data = $comment;
+                    $data['coid'] = $comment->id; unset($data['id']); //修改id为coid，与数据库保持一致
+                    return returnData(true, "操作成功", $data);
+                }
+            } catch (\Throwable $th) {
+                return returnData(false, $th->errorInfo[2], null);
+            }
+        }else{
+            return returnData(false, "缺rid或者moid", null);
+        }
+    }
 }
