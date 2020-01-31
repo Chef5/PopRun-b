@@ -79,4 +79,6 @@ Route::prefix('admin')->group(function () {
     Route::get('/', function(){
         return "管理接口暂未开发完成";
     });
+    // 初始化数据
+    Route::get('/initData', 'AdminController@initData');
 });
