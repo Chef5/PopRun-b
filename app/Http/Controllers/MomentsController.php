@@ -110,4 +110,40 @@ class MomentsController extends Controller
             return returnData(false, "缺rid或者moid", null);
         }
     }
+
+    // 点赞  遗留：缺少是否已点赞判断
+    public function doLike(Request $request){
+        if($request->has('rid') && $request->has('moid')){
+            $like = new LinkULikeMs();
+            $like->fill([
+                'rid' => $request->rid,
+                'moid' => $request->moid
+            ]);
+            try {
+                if($like->save()){
+                    return returnData(true, "操作成功", $like);
+                }else{
+                    return returnData(false, "操作失败", $like);
+                }
+            } catch (\Throwable $th) {
+                return returnData(false, $th->errorInfo[2], null);
+            }
+        }else{
+            return returnData(false, "缺rid或者moid", null);
+        }
+    }
+    
+    // 取消点赞
+    public function doDislike(Request $request){
+        if($request->has('rid') && $request->has('moid')){
+            try {
+                LinkULikeMs::where('rid', $request->rid)->where('moid', $request->moid)->delete();
+                return returnData(true, "操作成功", null);
+            } catch (\Throwable $th) {
+                return returnData(false, $th->errorInfo[2], null);
+            }
+        }else{
+            return returnData(false, "缺rid或者moid", null);
+        }
+    }
 }

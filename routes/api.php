@@ -54,6 +54,10 @@ Route::prefix('moments')->group(function () {
     Route::post('/delMoment', 'MomentsController@delMoment');
     // 发表评论
     Route::post('/doComment', 'MomentsController@doComment');
+    // 点赞
+    Route::post('/doLike', 'MomentsController@doLike');
+    // 取消点赞
+    Route::post('/doDislike', 'MomentsController@doDislike');
 });
 
 /**
