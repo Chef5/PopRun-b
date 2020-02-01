@@ -58,6 +58,8 @@ Route::prefix('moments')->group(function () {
     Route::post('/doLike', 'MomentsController@doLike');
     // 取消点赞
     Route::post('/doDislike', 'MomentsController@doDislike');
+    // 获取个人动态
+    Route::post('/getMine', 'MomentsController@getMine');
 });
 
 /**

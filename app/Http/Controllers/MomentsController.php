@@ -87,7 +87,7 @@ class MomentsController extends Controller
         }
     }
 
-    // 发表评论
+    // 发表评论 遗留：缺少判断是否存在moid
     public function doComment(Request $request){
         if($request->has('rid') && $request->has('moid')){
             $comment = new Comments();
@@ -144,6 +144,66 @@ class MomentsController extends Controller
             }
         }else{
             return returnData(false, "缺rid或者moid", null);
+        }
+    }
+
+    // 获取个人动态
+    public function getMine(Request $request){
+        if($request->has('rid')){
+            $request->has('pageindex') ? $pageindex = $request->pageindex : $pageindex = 1;  //当前页 1,2,3,...
+            $request->has('pagesize') ? $pagesize = $request->pagesize : $pagesize = 10;  //页面大小
+            $pageall = null; //总页数
+            try {
+                $moments = RMoments::where('rid', $request->rid)->get();
+                $moment_num = count($moments); //动态总条数
+                $pageall = ceil($moment_num/$pagesize); //计算总页数
+                $data = []; //动态联合数据
+                for($i = ($pageindex-1)*$pagesize,$n=0; $i<($pageindex-1)*$pagesize+$pagesize && $i<$moment_num; $i++,$n++){
+                    $data[$n]= $moments[$i];
+                    //获取评论
+                    $data[$n]['comments'] = Comments::join('r_users', 'r_users.rid', '=', 'comments.rid')
+                                                    ->where('moid', $moments[$i]['moid'])
+                                                    ->select('comments.*', 'r_users.nickname')
+                                                    ->get();
+                    //获取点赞
+                    $data[$n]['likes'] = LinkULikeMs::join('r_users', 'r_users.rid', '=', 'link_u_like_ms.rid')
+                                                    ->where('moid', $moments[$i]['moid'])
+                                                    ->select('link_u_like_ms.*', 'r_users.img')
+                                                    ->get();
+                    //获取图片
+                    $imgs = RMomentImgs::where('moid', $moments[$i]['moid'])->get();
+                    $original = []; $thumbnail = [];
+                    foreach($imgs as $img){
+                        $original []= [
+                            "url" => $img->original,
+                            "width" => $img->width,
+                            "height" => $img->height
+                        ];
+                        $thumbnail []= [
+                            "url" => $img->thumbnail,
+                            "width" => $img->mwidth,
+                            "height" => $img->mheight
+                        ];
+                    }
+                    $data[$n]['imgs'] = [
+                        'original' => $original,
+                        'thumbnail' => $thumbnail
+                    ];
+                }
+                //返回数据处理
+                $re = [
+                    'rid' => $request->rid,
+                    'pageindex' => $pageindex,
+                    'pagesize' => $pagesize,
+                    'pageall' => $pageall,
+                    'moments' => $data
+                ];
+                return returnData(true, "操作成功", $re);
+            } catch (\Throwable $th) {
+                return returnData(false, "$th->errorInfo[2]", $th);
+            }
+        }else{
+            return returnData(false, "缺少rid", null);
         }
     }
 }
