@@ -3,6 +3,8 @@
 namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
+use DB;
+use Storage;
 use App\RUsers;
 use App\RMoments;
 use App\Comments;
@@ -61,6 +63,27 @@ class MomentsController extends Controller
             }
         }else{
             return returnData(false, "缺rid", null);
+        }
+    }
+
+    //删除动态
+    public function delMoment(Request $request){
+        if($request->has('rid') && $request->has('moid')){
+            DB::beginTransaction(); //事务开始
+            try {
+                Comments::where('moid', $request->moid)->delete(); //删除评论
+                LinkULikeMs::where('moid', $request->moid)->delete(); //删除点赞
+                RMomentImgs::where('moid', $request->moid)->delete(); //删除图片
+                // Stroage::delete()  //删除图片文件  技术原因暂时不做
+                RMoments::where('moid', $request->moid)->where('rid', $request->rid)->delete(); //删除动态
+                DB::commit(); //提交事务
+                return returnData(true, "操作成功", null);
+            } catch (\Throwable $th) {
+                DB::rollback(); //回滚
+                return returnData(false, $th->errorInfo[2], $th);
+            }
+        }else{
+            return returnData(false, "缺rid或者moid", null);
         }
     }
 

@@ -50,6 +50,8 @@ Route::prefix('moments')->group(function () {
     });
     // 发布动态
     Route::post('/doMoment', 'MomentsController@doMoment');
+    // 删除动态
+    Route::post('/delMoment', 'MomentsController@delMoment');
     // 发表评论
     Route::post('/doComment', 'MomentsController@doComment');
 });
