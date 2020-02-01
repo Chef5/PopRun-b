@@ -150,7 +150,7 @@ class MomentsController extends Controller
     // 获取个人动态
     public function getMine(Request $request){
         if($request->has('rid')){
-            $request->has('pageindex') ? $pageindex = $request->pageindex : $pageindex = 1;  //当前页 1,2,3,...
+            $request->has('pageindex') ? $pageindex = $request->pageindex+1 : $pageindex = 1;  //当前页 1,2,3,...,首次查询可以传0
             $request->has('pagesize') ? $pagesize = $request->pagesize : $pagesize = 10;  //页面大小
             $pageall = null; //总页数
             try {
