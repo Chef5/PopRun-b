@@ -206,4 +206,60 @@ class MomentsController extends Controller
             return returnData(false, "缺少rid", null);
         }
     }
+
+    // 获取动态
+    public function getMoments(Request $request){
+        $request->has('pageindex') ? $pageindex = $request->pageindex+1 : $pageindex = 1;  //当前页 1,2,3,...,首次查询可以传0
+        $request->has('pagesize') ? $pagesize = $request->pagesize : $pagesize = 10;  //页面大小
+        try {
+            $moments = RMoments::join('r_users', 'r_users.rid', '=', 'r_moments.rid')
+                                ->select('r_moments.*', 'r_users.nickname', 'r_users.img')
+                                ->orderBy('created_at', 'desc')
+                                ->skip(($pageindex-1)*$pagesize)
+                                ->take($pagesize)
+                                ->get();
+            $data = []; //动态联合数据
+            for($n = 0; $n<count($moments); $n++){
+                $data[$n] = $moments[$n];
+                //获取评论
+                $data[$n]['comments'] = Comments::join('r_users', 'r_users.rid', '=', 'comments.rid')
+                                                ->where('moid', $moments[$n]['moid'])
+                                                ->select('comments.*', 'r_users.nickname')
+                                                ->get();
+                //获取点赞
+                $data[$n]['likes'] = LinkULikeMs::join('r_users', 'r_users.rid', '=', 'link_u_like_ms.rid')
+                                                ->where('moid', $moments[$n]['moid'])
+                                                ->select('link_u_like_ms.*', 'r_users.img')
+                                                ->get();
+                //获取图片
+                $imgs = RMomentImgs::where('moid', $moments[$n]['moid'])->get();
+                $original = []; $thumbnail = [];
+                foreach($imgs as $img){
+                    $original []= [
+                        "url" => $img->original,
+                        "width" => $img->width,
+                        "height" => $img->height
+                    ];
+                    $thumbnail []= [
+                        "url" => $img->thumbnail,
+                        "width" => $img->mwidth,
+                        "height" => $img->mheight
+                    ];
+                }
+                $data[$n]['imgs'] = [
+                    'original' => $original,
+                    'thumbnail' => $thumbnail
+                ];
+            }
+            //返回数据处理
+            $re = [
+                'pageindex' => $pageindex,
+                'pagesize' => $pagesize,
+                'moments' => $data
+            ];
+            return returnData(true, "操作成功", $re);
+        } catch (\Throwable $th) {
+            return returnData(false, "$th->errorInfo[2]", $th);
+        }
+    }
 }

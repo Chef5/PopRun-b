@@ -60,6 +60,8 @@ Route::prefix('moments')->group(function () {
     Route::post('/doDislike', 'MomentsController@doDislike');
     // 获取个人动态
     Route::post('/getMine', 'MomentsController@getMine');
+    // 获取动态
+    Route::post('/getMoments', 'MomentsController@getMoments');
 });
 
 /**
