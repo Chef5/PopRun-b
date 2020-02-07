@@ -71,6 +71,7 @@ Route::prefix('pub')->group(function () {
     Route::get('/', function(){
         return "活动接口暂未开发完成";
     });
+    Route::post('/doActivity', 'ActivitysController@doActivity');
 });
 
 /**
