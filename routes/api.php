@@ -71,7 +71,10 @@ Route::prefix('pub')->group(function () {
     Route::get('/', function(){
         return "活动接口暂未开发完成";
     });
+    // 创建活动
     Route::post('/doActivity', 'ActivitysController@doActivity');
+    // 获取活动列表
+    Route::post('/getList', 'ActivitysController@getList');
 });
 
 /**

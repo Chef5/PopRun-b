@@ -57,4 +57,48 @@ class ActivitysController extends Controller
             return returnData(false, "缺rid", null);
         }
     }
+
+    //获取活动列表
+    public function getList(Request $request){
+        $request->has('pageindex') ? $pageindex = $request->pageindex+1 : $pageindex = 1;  //当前页 1,2,3,...,首次查询可以传0
+        $request->has('pagesize') ? $pagesize = $request->pagesize : $pagesize = 10;  //页面大小
+        try {
+            $activitys = RActivitys::orderBy('created_at', 'desc')
+                                ->skip(($pageindex-1)*$pagesize)
+                                ->take($pagesize)
+                                ->get();
+            $data = []; //动态联合数据
+            for($n = 0; $n<count($activitys); $n++){
+                $data[$n] = $activitys[$n];
+                //获取图片
+                $imgs = RActivityImgs::where('acid', $activitys[$n]['acid'])->get();
+                $original = []; $thumbnail = [];
+                foreach($imgs as $img){
+                    $original []= [
+                        "url" => $img->original,
+                        "width" => $img->width,
+                        "height" => $img->height
+                    ];
+                    $thumbnail []= [
+                        "url" => $img->thumbnail,
+                        "width" => $img->mwidth,
+                        "height" => $img->mheight
+                    ];
+                }
+                $data[$n]['imgs'] = [
+                    'original' => $original,
+                    'thumbnail' => $thumbnail
+                ];
+            }
+            //返回数据处理
+            $re = [
+                'pageindex' => $pageindex,
+                'pagesize' => $pagesize,
+                'activitys' => $data
+            ];
+            return returnData(true, "操作成功", $re);
+        } catch (\Throwable $th) {
+            return returnData(false, "$th->errorInfo[2]", $th);
+        }
+    }
 }
