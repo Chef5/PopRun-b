@@ -77,6 +77,8 @@ Route::prefix('pub')->group(function () {
     Route::post('/getList', 'ActivitysController@getList');
     // 获取轮播活动
     Route::get('/getSwipper', 'ActivitysController@getSwipper');
+    // 获取轮播活动详细
+    Route::get('/getSwipperDetail', 'ActivitysController@getSwipperDetail');
 });
 
 /**

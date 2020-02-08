@@ -124,4 +124,22 @@ class ActivitysController extends Controller
             return returnData(false, $th->errorInfo[2], $th);
         }
     }
+
+    //获取轮播活动详细
+    public function getSwipperDetail(Request $request){
+        if($request->has('acid')){
+            try {
+                //获取活动
+                $activity = RActivitys::where('acid', $request->acid)->get()[0]; // 注意：单一数据存在数组中0
+                //获取图片
+                $imgs = RActivityImgs::where('acid', $request->acid)->get();
+                $activity['imgs'] = $imgs;
+                return returnData(true, "操作成功", $activity);
+            } catch (\Throwable $th) {
+                return returnData(false, $th->errorInfo[2], $th);
+            }
+        }else{
+            return returnData(false, "缺少acid", null);
+        }
+    }
 }
