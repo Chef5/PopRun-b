@@ -98,7 +98,30 @@ class ActivitysController extends Controller
             ];
             return returnData(true, "操作成功", $re);
         } catch (\Throwable $th) {
-            return returnData(false, "$th->errorInfo[2]", $th);
+            return returnData(false, $th->errorInfo[2], $th);
+        }
+    }
+
+    //获取轮播活动
+    public function getSwipper(Request $request){
+        try {
+            $activitys = RActivitys::inRandomOrder()
+                                // ->latest()   //ordered by the created_at column
+                                ->limit(3)
+                                ->select('acid', 'title', 'desc', 'cover')
+                                ->get();
+            $data = []; //动态联合数据
+            for($n = 0; $n<count($activitys); $n++){
+                $data[$n] = $activitys[$n];
+                //获取封面图片
+                $imgs = RActivityImgs::where('acid', $activitys[$n]['acid'])->get();
+                $cover['original'] = $imgs[$activitys[$n]['cover']]->original;
+                $cover['thumbnail'] = $imgs[$activitys[$n]['cover']]->thumbnail;
+                $data[$n]['cover'] = $cover;
+            }
+            return returnData(true, "操作成功", $data);
+        } catch (\Throwable $th) {
+            return returnData(false, $th->errorInfo[2], $th);
         }
     }
 }
