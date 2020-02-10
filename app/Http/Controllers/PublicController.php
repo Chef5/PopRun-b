@@ -64,4 +64,29 @@ class PublicController extends Controller
         }
         return returnData(true, "操作成功", $data);
     }
+    // 获取openid
+    public function getOpenid(Request $request){
+        if($request->has('code')){
+            $url = 'https://api.weixin.qq.com/sns/jscode2session?appid='.env('WX_APPID').'&secret='.env('WX_SECRET').'&js_code='.$request->code.'&grant_type=authorization_code';
+            $curl = curl_init();
+            curl_setopt($curl, CURLOPT_URL, $url);
+            curl_setopt($curl, CURLOPT_RETURNTRANSFER, 1);
+            curl_setopt($curl, CURLOPT_SSL_VERIFYPEER, false);//不验证
+            curl_setopt($curl, CURLOPT_SSL_VERIFYHOST, false);//不验证主机
+            $returnjson=curl_exec($curl);
+            if($returnjson){
+                //整理返回数据
+                $json = json_decode($returnjson);
+                if(!property_exists($json, 'errmsg')){
+                    return returnData(true, "操作成功", $json);
+                }else{
+                    return returnData(false, $json->errmsg, null);
+                }
+            }else{
+                return returnData(false, curl_error($curl), null);
+            }
+        }else{
+            return returnData(false, "缺少code", null);
+        }
+    }
 }

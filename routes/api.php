@@ -24,6 +24,8 @@ Route::prefix('main')->group(function () {
     Route::get('/getToken', function(Request $request){
         return var_dump($request);
     });
+    //获取用户openid
+    Route::post('/getOpenid', 'PublicController@getOpenid');
     //用户授权注册
     Route::post('/wxAuth', 'RUsersController@regster');
     // 图片上传
