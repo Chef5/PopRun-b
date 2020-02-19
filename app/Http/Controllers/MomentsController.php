@@ -200,7 +200,7 @@ class MomentsController extends Controller
                 ];
                 return returnData(true, "操作成功", $re);
             } catch (\Throwable $th) {
-                return returnData(false, "$th->errorInfo[2]", $th);
+                return returnData(false, $th->errorInfo[2], $th);
             }
         }else{
             return returnData(false, "缺少rid", null);
@@ -259,7 +259,52 @@ class MomentsController extends Controller
             ];
             return returnData(true, "操作成功", $re);
         } catch (\Throwable $th) {
-            return returnData(false, "$th->errorInfo[2]", $th);
+            return returnData(false, $th->errorInfo[2], $th);
+        }
+    }
+
+    // 获取某条动态
+    public function getMomentById(Request $request){
+        if($request->has('moid')){
+            try {
+                $moment = RMoments::where('moid', $request->moid)->first();
+                $data = []; //动态联合数据
+                $data= $moment;
+                //获取评论
+                $data['comments'] = Comments::join('r_users', 'r_users.rid', '=', 'comments.rid')
+                                                ->where('moid', $request->moid)
+                                                ->select('comments.*', 'r_users.nickname')
+                                                ->get();
+                //获取点赞
+                $data['likes'] = LinkULikeMs::join('r_users', 'r_users.rid', '=', 'link_u_like_ms.rid')
+                                                ->where('moid', $request->moid)
+                                                ->select('link_u_like_ms.*', 'r_users.img')
+                                                ->get();
+                //获取图片
+                $imgs = RMomentImgs::where('moid', $request->moid)->get();
+                $original = []; $thumbnail = [];
+                foreach($imgs as $img){
+                    $original []= [
+                        "url" => $img->original,
+                        "width" => $img->width,
+                        "height" => $img->height
+                    ];
+                    $thumbnail []= [
+                        "url" => $img->thumbnail,
+                        "width" => $img->mwidth,
+                        "height" => $img->mheight
+                    ];
+                }
+                $data['imgs'] = [
+                    'original' => $original,
+                    'thumbnail' => $thumbnail
+                ];
+                return returnData(true, "操作成功", $data);
+            } catch (\Throwable $th) {
+                return returnData(false, $th->errorInfo[2], $th);
+            }
+        }else{
+            return returnData(false, "缺少moid", null);
         }
     }
 }

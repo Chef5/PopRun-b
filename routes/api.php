@@ -64,6 +64,8 @@ Route::prefix('moments')->group(function () {
     Route::post('/getMine', 'MomentsController@getMine');
     // 获取动态
     Route::post('/getMoments', 'MomentsController@getMoments');
+    // 获取某条动态
+    Route::get('/getMomentById', 'MomentsController@getMomentById');
 });
 
 /**
