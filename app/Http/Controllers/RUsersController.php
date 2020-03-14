@@ -4,6 +4,8 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use App\RUsers;
+use App\LinkUHs;
+use App\RHonors;
 
 class RUsersController extends Controller
 {
@@ -13,10 +15,19 @@ class RUsersController extends Controller
     public function regster(Request $request){
         if ($request->has('openid')) {
             $user = new RUsers();
+            $linkhonor = new LinkUHs();
             try {
+                // 用户数据
                 $user->fillable(array_keys($request->all()));
                 $user->fill($request->all());
                 $user->save();
+                // 注册即获得初级称号
+                $lv1 = RHonors::first();
+                $linkhonor->fill([
+                    'rid' =>  $user->id,
+                    'hoid' => $lv1->hoid
+                ]);
+                $linkhonor->save();
                 return returnData(true, '操作成功', RUsers::where('rid', $user->id)->first());
             } catch (\Throwable $th) {
                 return returnData(false, $th->errorInfo[2], null);
@@ -46,6 +57,31 @@ class RUsersController extends Controller
             }
         }else{
             return returnData(false, '缺少openid或rid', null);
+        }
+    }
+
+    /** 
+     * 获取用户信息（含勋章称号）
+     */
+    public function getUserAll(Request $request){
+        if ($request->has('rid')) {
+            try {
+                // 获取用户基本信息
+                $data = RUsers::where('rid', $request->rid)->first();
+                // 获取称号
+                $data['honors'] = LinkUHs::join('r_honors', 'link_u_hs.hoid', '=', 'r_honors.hoid')
+                        ->where('rid', $request->rid)
+                        ->select('link_u_hs.*', 'r_honors.desc', 'r_honors.name')
+                        ->orderBy('created_at', 'desc')
+                        ->get();
+                // 获取勋章（遗留：需等待勋章业务实现）
+
+                return returnData(true, '操作成功', $data);
+            } catch (\Throwable $th) {
+                return returnData(false, $th->errorInfo[2], $th);
+            }
+        }else{
+            return returnData(false, '缺少rid', null);
         }
     }
 
