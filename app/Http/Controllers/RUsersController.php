@@ -85,6 +85,28 @@ class RUsersController extends Controller
         }
     }
 
+    
+    /** 
+     * 获取已获称号
+     */
+    public function getHonor(Request $request){
+        if ($request->has('rid')) {
+            try {
+                // 获取称号
+                $data = LinkUHs::join('r_honors', 'link_u_hs.hoid', '=', 'r_honors.hoid')
+                        ->where('rid', $request->rid)
+                        ->select('link_u_hs.*', 'r_honors.desc', 'r_honors.name')
+                        ->orderBy('created_at', 'asc')
+                        ->get();
+                return returnData(true, '操作成功', $data);
+            } catch (\Throwable $th) {
+                return returnData(false, $th->errorInfo[2], $th);
+            }
+        }else{
+            return returnData(false, '缺少rid', null);
+        }
+    }
+
     /**
      * 修改用户信息
      */
