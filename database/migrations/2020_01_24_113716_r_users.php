@@ -17,6 +17,7 @@ class RUsers extends Migration
             $table->increments('rid', 10);
             $table->string('openid', 50)->unique();
             $table->string('nickname', 20)->nullable();
+            $table->string('team', 50)->nullable()->comment('校区');
             $table->string('sex', 1)->nullable();
             $table->string('img', 200)->nullable();
             $table->string('info', 200)->nullable();

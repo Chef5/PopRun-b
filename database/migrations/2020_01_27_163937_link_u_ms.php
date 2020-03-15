@@ -14,6 +14,7 @@ class LinkUMs extends Migration
     public function up()
     {
         Schema::create('link_u_ms', function (Blueprint $table) {
+            $table->increments('linkid', 10);
             $table->integer('rid')->foreign('rid')->references('rid')->on('r_users');
             $table->integer('meid')->foreign('meid')->references('meid')->on('r_medals');
             $table->timestamps();
