@@ -52,7 +52,7 @@ class PublicController extends Controller
             ];
             return returnData(true, '上传成功', $data);
         } catch (\Throwable $th) {
-            return returnData(false, $th->errorInfo[2], null);
+            returnData(false, $th);
         }
     }
     // 获取称号列表

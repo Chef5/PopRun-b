@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
+use DB;
 use App\RUsers;
 use App\LinkUHs;
 use App\RHonors;
@@ -17,23 +18,26 @@ class RUsersController extends Controller
             $user = new RUsers();
             $linkhonor = new LinkUHs();
             try {
-                // 用户数据
-                $user->fillable(array_keys($request->all()));
-                $user->fill($request->all());
-                $user->save();
-                // 注册即获得初级称号
-                $lv1 = RHonors::first();
-                $linkhonor->fill([
-                    'rid' =>  $user->id,
-                    'hoid' => $lv1->hoid
-                ]);
-                $linkhonor->save();
+                DB::beginTransaction();
+                    // 用户数据
+                    $user->fillable(array_keys($request->all()));
+                    $user->fill($request->all());
+                    $user->save();
+                    // 注册即获得初级称号
+                    $lv1 = RHonors::first();
+                    $linkhonor->fill([
+                        'rid' =>  $user->id,
+                        'hoid' => $lv1->hoid
+                    ]);
+                    $linkhonor->save();
+                DB::commit();
                 return returnData(true, '操作成功', RUsers::where('rid', $user->id)->first());
             } catch (\Throwable $th) {
-                return returnData(false, $th->errorInfo[2], null);
+                DB::rollBack();
+                return returnData(false, $th);
             }
         }else{
-            return returnData(false, '缺少openid', null);
+            return returnData(false, '缺少openid');
         }
     }
     
@@ -46,13 +50,13 @@ class RUsersController extends Controller
                 try {
                     return returnData(true, '操作成功', RUsers::where('openid', $request->openid)->first());
                 } catch (\Throwable $th) {
-                    return returnData(false, $th->errorInfo[2], null);
+                    return returnData(false, $th);
                 }
             }else{
                 try {
                     return returnData(true, '操作成功', RUsers::where('rid', $request->rid)->first());
                 } catch (\Throwable $th) {
-                    return returnData(false, $th->errorInfo[2], null);
+                    return returnData(false, $th);
                 }
             }
         }else{
@@ -78,7 +82,7 @@ class RUsersController extends Controller
 
                 return returnData(true, '操作成功', $data);
             } catch (\Throwable $th) {
-                return returnData(false, $th->errorInfo[2], $th);
+                returnData(false, $th);
             }
         }else{
             return returnData(false, '缺少rid', null);
@@ -100,7 +104,7 @@ class RUsersController extends Controller
                         ->get();
                 return returnData(true, '操作成功', $data);
             } catch (\Throwable $th) {
-                return returnData(false, $th->errorInfo[2], $th);
+                returnData(false, $th);
             }
         }else{
             return returnData(false, '缺少rid', null);
@@ -135,7 +139,7 @@ class RUsersController extends Controller
                     return returnData(false, '不存在该用户', null);
                 }
             } catch (\Throwable $th) {
-                return returnData(false, $th->errorInfo[2], null);
+                returnData(false, $th);
             }
         }else{
             return returnData(false, '缺少openid或rid', null);
@@ -155,7 +159,7 @@ class RUsersController extends Controller
                 }
                 return returnData(true, "操作成功", null);
             } catch (\Throwable $th) {
-                return returnData(false, $th->errorInfo[2], null);
+                returnData(false, $th);
             }
         }else{
             return returnData(false, '缺少openid或rid', null);

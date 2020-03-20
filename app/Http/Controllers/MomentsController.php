@@ -53,7 +53,7 @@ class MomentsController extends Controller
                             return returnData(true, "操作成功", $data);
                         }
                     } catch (\Throwable $th) {
-                        return returnData(false, $th->errorInfo[2], null);
+                        returnData(false, $th);
                     }
                 }else{
                     return returnData(false, '不存在该用户', null);
@@ -80,7 +80,7 @@ class MomentsController extends Controller
                 return returnData(true, "操作成功", null);
             } catch (\Throwable $th) {
                 DB::rollback(); //回滚
-                return returnData(false, $th->errorInfo[2], $th);
+                returnData(false, $th);
             }
         }else{
             return returnData(false, "缺rid或者moid", null);
@@ -104,7 +104,7 @@ class MomentsController extends Controller
                     return returnData(true, "操作成功", $data);
                 }
             } catch (\Throwable $th) {
-                return returnData(false, $th->errorInfo[2], null);
+                returnData(false, $th);
             }
         }else{
             return returnData(false, "缺rid或者moid", null);
@@ -126,7 +126,7 @@ class MomentsController extends Controller
                     return returnData(false, "操作失败", $like);
                 }
             } catch (\Throwable $th) {
-                return returnData(false, $th->errorInfo[2], null);
+                returnData(false, $th);
             }
         }else{
             return returnData(false, "缺rid或者moid", null);
@@ -140,7 +140,7 @@ class MomentsController extends Controller
                 LinkULikeMs::where('rid', $request->rid)->where('moid', $request->moid)->delete();
                 return returnData(true, "操作成功", null);
             } catch (\Throwable $th) {
-                return returnData(false, $th->errorInfo[2], null);
+                returnData(false, $th);
             }
         }else{
             return returnData(false, "缺rid或者moid", null);
@@ -200,7 +200,7 @@ class MomentsController extends Controller
                 ];
                 return returnData(true, "操作成功", $re);
             } catch (\Throwable $th) {
-                return returnData(false, $th->errorInfo[2], $th);
+                returnData(false, $th);
             }
         }else{
             return returnData(false, "缺少rid", null);
@@ -259,7 +259,7 @@ class MomentsController extends Controller
             ];
             return returnData(true, "操作成功", $re);
         } catch (\Throwable $th) {
-            return returnData(false, $th->errorInfo[2], $th);
+            returnData(false, $th);
         }
     }
 
@@ -301,7 +301,7 @@ class MomentsController extends Controller
                 ];
                 return returnData(true, "操作成功", $data);
             } catch (\Throwable $th) {
-                return returnData(false, $th->errorInfo[2], $th);
+                returnData(false, $th);
             }
         }else{
             return returnData(false, "缺少moid", null);

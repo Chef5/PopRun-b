@@ -34,7 +34,7 @@ class AdminController extends Controller
                     
                     return returnData(true, "初始化完成", null);
                 } catch (\Throwable $th) {
-                    return returnData(false, $th->errorInfo[2], null);
+                    returnData(false, $th);
                 }
             }else{
                 return returnData(false, 'key错误，非法操作', null);
