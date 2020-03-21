@@ -5,6 +5,8 @@ namespace App\Http\Controllers;
 use Illuminate\Http\Request;
 use App\RHonors;
 use App\RMedals;
+use Image;
+use Validator;
 use DB;
 
 class AdminController extends Controller
@@ -95,6 +97,49 @@ class AdminController extends Controller
             }
         }else{
             return returnData(false, '没有key，非法操作', null);
+        }
+    }
+
+    // 上传勋章图标
+    public function uploadMedal(Request $request){
+        if($request->has('img') && $request->has('mkey') && $request->has('type') && $request->has('name') && $request->has('desc')){
+            $rules = [
+                'img' => [ 'file','image','max:10240' ]
+            ];
+            $validator = Validator::make($request->all(),$rules);
+            if($validator->fails()){
+                return returnData(false, "校验失败", back()->withErrors($validator)->withInput());
+            }
+            $photo = $request->img;
+            $file_relative_path = 'resources/medals/';
+            $file_path = public_path($file_relative_path);
+            try {
+                if (!is_dir($file_path)){
+                    mkdir($file_path);
+                }
+                //储存图片 resources/medals/mkey.png
+                $image = Image::make($photo)->save($file_path.'/'.$request->mkey.'.'.$photo->getClientOriginalExtension());
+                //储存到勋章表
+                $fileurl = 'http://'.$request->server('HTTP_HOST').'/'.$file_relative_path.$request->mkey.'.'.$photo->getClientOriginalExtension();
+                $medal = [
+                    "mkey"=> $request->mkey,
+                    "type"=> $request->type,
+                    "name"=> $request->name,
+                    "desc"=> $request->desc,
+                    "img"=> $fileurl
+                ];
+                $rMedals = new RMedals();
+                $rMedals->fillable(array_keys($medal));
+                $rMedals->fill($medal);
+                $rMedals->save();
+                // 返回数据
+                $rMedals['meid'] = $rMedals->id; unset($rMedals['id']); //修改id为meid，与数据库保持一致
+                return returnData(true, '上传成功', $rMedals);
+            } catch (\Throwable $th) {
+                return returnData(false, $th);
+            }
+        }else{
+            return returnData(false, "缺少参数", $request->all());
         }
     }
 }

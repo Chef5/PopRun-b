@@ -18,7 +18,7 @@ class PublicController extends Controller
         ];
         $validator = Validator::make($inputData,$rules);
         if($validator->fails()){
-            return returnData(true, "校验失败", back()->withErrors($validator)->withInput());
+            return returnData(false, "校验失败", back()->withErrors($validator)->withInput());
         }
         $photo = $inputData['img'];
         $file_name = uniqid();

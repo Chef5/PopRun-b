@@ -115,4 +115,6 @@ Route::prefix('admin')->group(function () {
     });
     // 初始化数据
     Route::get('/initData', 'AdminController@initData');
+    // 上传勋章图标
+    Route::post('/uploadMedal', 'AdminController@uploadMedal');
 });
