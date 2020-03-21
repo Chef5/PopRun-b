@@ -77,7 +77,7 @@ class RUsersController extends Controller
                         ->where('rid', $request->rid)
                         ->select('link_u_hs.*', 'r_honors.desc', 'r_honors.name')
                         ->orderBy('created_at', 'desc')
-                        ->get();
+                        ->first();
                 // 获取勋章（遗留：需等待勋章业务实现）
 
                 return returnData(true, '操作成功', $data);
