@@ -7,6 +7,8 @@ use DB;
 use App\RUsers;
 use App\LinkUHs;
 use App\RHonors;
+use App\RMedals;
+use App\LinkUMs;
 
 class RUsersController extends Controller
 {
@@ -69,7 +71,7 @@ class RUsersController extends Controller
      */
     public function getUserAll(Request $request){
         if ($request->has('rid')) {
-            try {
+            // try {
                 // 获取用户基本信息
                 $data = RUsers::where('rid', $request->rid)->first();
                 // 获取称号
@@ -78,12 +80,16 @@ class RUsersController extends Controller
                         ->select('link_u_hs.*', 'r_honors.desc', 'r_honors.name')
                         ->orderBy('created_at', 'desc')
                         ->first();
-                // 获取勋章（遗留：需等待勋章业务实现）
-
+                // 获取勋章
+                $data['medals'] = LinkUMs::where('link_u_ms.rid', $request->rid)
+                        ->leftJoin('r_medals', 'link_u_ms.meid', '=', 'r_medals.meid')
+                        ->select('link_u_ms.*', 'r_medals.mkey', 'r_medals.type', 'r_medals.name', 'r_medals.desc', 'r_medals.img')
+                        ->orderBy('created_at', 'asc')
+                        ->get();
                 return returnData(true, '操作成功', $data);
-            } catch (\Throwable $th) {
-                return returnData(false, $th);
-            }
+            // } catch (\Throwable $th) {
+            //     return returnData(false, $th);
+            // }
         }else{
             return returnData(false, '缺少rid', null);
         }
