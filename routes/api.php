@@ -32,6 +32,8 @@ Route::prefix('main')->group(function () {
     Route::post('/uploadImg', 'PublicController@uploadImg');
     // 获取称号列表
     Route::get('/getHonorAll', 'PublicController@getHonorAll');
+    // 获取勋章列表
+    Route::get('/getMedalAll', 'PublicController@getMedalAll');
 });
 
 /**

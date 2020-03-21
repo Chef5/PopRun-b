@@ -6,6 +6,7 @@ use Illuminate\Http\Request;
 use Image;
 use Validator;
 use App\RHonors;
+use App\RMedals;
 
 class PublicController extends Controller
 {
@@ -88,5 +89,9 @@ class PublicController extends Controller
         }else{
             return returnData(false, "缺少code", null);
         }
+    }
+    // 获取勋章列表
+    public function getMedalAll(Request $request){
+        return returnData(true, "操作成功", RMedals::get());
     }
 }
