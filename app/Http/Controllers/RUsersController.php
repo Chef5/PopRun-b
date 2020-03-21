@@ -117,6 +117,28 @@ class RUsersController extends Controller
         }
     }
 
+    /** 
+     * 获取已获勋章
+     */
+    public function getMedal(Request $request){
+        if ($request->has('rid')) {
+            try {
+                // 获取勋章
+                $data = LinkUMs::where('link_u_ms.rid', $request->rid)
+                        ->leftJoin('r_medals', 'link_u_ms.meid', '=', 'r_medals.meid')
+                        ->select('link_u_ms.*', 'r_medals.mkey', 'r_medals.type', 'r_medals.name', 'r_medals.desc', 'r_medals.img')
+                        ->orderBy('created_at', 'asc')
+                        ->get();
+                return returnData(true, '操作成功', $data);
+            } catch (\Throwable $th) {
+                return returnData(false, $th);
+            }
+        }else{
+            return returnData(false, '缺少rid', null);
+        }
+        
+    }
+
     /**
      * 修改用户信息
      */

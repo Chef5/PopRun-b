@@ -98,8 +98,10 @@ Route::prefix('user')->group(function () {
     Route::post('/getUser', 'RUsersController@getUser');
     //获取个人信息（含勋章称号）
     Route::post('/getUserAll', 'RUsersController@getUserAll');
-    //获取个人信息
+    //获取已获称号
     Route::post('/getHonor', 'RUsersController@getHonor');
+    //获取已获勋章
+    Route::post('/getMedal', 'RUsersController@getMedal');
     //修改个人信息
     Route::post('/doUpdate', 'RUsersController@doUpdate');
     // 注销账号
