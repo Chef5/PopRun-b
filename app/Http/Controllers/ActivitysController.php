@@ -98,7 +98,7 @@ class ActivitysController extends Controller
             ];
             return returnData(true, "操作成功", $re);
         } catch (\Throwable $th) {
-            returnData(false, $th);
+            return returnData(false, $th);
         }
     }
 
@@ -121,7 +121,7 @@ class ActivitysController extends Controller
             }
             return returnData(true, "操作成功", $data);
         } catch (\Throwable $th) {
-            returnData(false, $th);
+            return returnData(false, $th);
         }
     }
 
@@ -136,7 +136,7 @@ class ActivitysController extends Controller
                 $activity['imgs'] = $imgs;
                 return returnData(true, "操作成功", $activity);
             } catch (\Throwable $th) {
-                returnData(false, $th);
+                return returnData(false, $th);
             }
         }else{
             return returnData(false, "缺少acid", null);

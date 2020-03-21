@@ -82,7 +82,7 @@ class RUsersController extends Controller
 
                 return returnData(true, '操作成功', $data);
             } catch (\Throwable $th) {
-                returnData(false, $th);
+                return returnData(false, $th);
             }
         }else{
             return returnData(false, '缺少rid', null);
@@ -104,7 +104,7 @@ class RUsersController extends Controller
                         ->get();
                 return returnData(true, '操作成功', $data);
             } catch (\Throwable $th) {
-                returnData(false, $th);
+                return returnData(false, $th);
             }
         }else{
             return returnData(false, '缺少rid', null);
@@ -139,7 +139,7 @@ class RUsersController extends Controller
                     return returnData(false, '不存在该用户', null);
                 }
             } catch (\Throwable $th) {
-                returnData(false, $th);
+                return returnData(false, $th);
             }
         }else{
             return returnData(false, '缺少openid或rid', null);
@@ -159,7 +159,7 @@ class RUsersController extends Controller
                 }
                 return returnData(true, "操作成功", null);
             } catch (\Throwable $th) {
-                returnData(false, $th);
+                return returnData(false, $th);
             }
         }else{
             return returnData(false, '缺少openid或rid', null);
