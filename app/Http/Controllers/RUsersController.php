@@ -33,7 +33,21 @@ class RUsersController extends Controller
                     ]);
                     $linkhonor->save();
                 DB::commit();
-                return returnData(true, '操作成功', RUsers::where('rid', $user->id)->first());
+                // 获取用户基本信息
+                $data = RUsers::where('rid', $user->id)->first();
+                // 获取称号
+                $data['honors'] = LinkUHs::join('r_honors', 'link_u_hs.hoid', '=', 'r_honors.hoid')
+                        ->where('rid', $user->id)
+                        ->select('link_u_hs.*', 'r_honors.desc', 'r_honors.name')
+                        ->orderBy('created_at', 'desc')
+                        ->first();
+                // 获取勋章
+                $data['medals'] = LinkUMs::where('link_u_ms.rid', $user->id)
+                        ->leftJoin('r_medals', 'link_u_ms.meid', '=', 'r_medals.meid')
+                        ->select('link_u_ms.*', 'r_medals.mkey', 'r_medals.type', 'r_medals.name', 'r_medals.desc', 'r_medals.img')
+                        ->orderBy('created_at', 'asc')
+                        ->get();
+                return returnData(true, '操作成功', $data);
             } catch (\Throwable $th) {
                 DB::rollBack();
                 return returnData(false, $th);
@@ -50,7 +64,9 @@ class RUsersController extends Controller
         if ($request->has('openid') || $request->has('rid')) {
             if ($request->has('openid')) {
                 try {
-                    return returnData(true, '操作成功', RUsers::where('openid', $request->openid)->first());
+                    $user = RUsers::where('openid', $request->openid)->first();
+                    if($user) return returnData(true, '操作成功', $user);
+                    else return returnData(false, '未注册');
                 } catch (\Throwable $th) {
                     return returnData(false, $th);
                 }
