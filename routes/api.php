@@ -43,6 +43,8 @@ Route::prefix('run')->group(function () {
     Route::get('/', function(){
         return "跑步接口暂未开发完成";
     });
+    // 获取随机一言
+    Route::get('/getHitokoto', 'RunController@getHitokoto');
 });
 
 /**
