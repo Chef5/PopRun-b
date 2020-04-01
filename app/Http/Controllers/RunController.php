@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
+use DB;
 use App\RRuns;
 use App\Hitokoto;
 
@@ -33,6 +34,29 @@ class RunController extends Controller
             }
         }else{
             return returnData(false, curl_error($curl));
+        }
+    }
+
+    //跑步开始
+    public function doStart(Request $request){
+        if($request->has('rid')){
+            $run = new RRuns();
+            try {
+                DB::beginTransaction();
+                    // 跑步初始数据
+                    $run->fillable(array_keys($request->all()));
+                    $run->fill($request->all());
+                    $run->save();
+                DB::commit();
+                // 处理返回数据
+                $data = RRuns::where('ruid', $run->id)->first();
+                return returnData(true, '操作成功', $data);
+            } catch (\Throwable $th) {
+                DB::rollBack();
+                return returnData(false, $th);
+            }
+        }else{
+            return returnData(false, '缺少rid');
         }
     }
 }

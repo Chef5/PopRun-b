@@ -45,6 +45,8 @@ Route::prefix('run')->group(function () {
     });
     // 获取随机一言
     Route::get('/getHitokoto', 'RunController@getHitokoto');
+    // 跑步开始
+    Route::post('/doStart', 'RunController@doStart');
 });
 
 /**
