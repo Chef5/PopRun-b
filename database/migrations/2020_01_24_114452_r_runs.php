@@ -25,7 +25,7 @@ class RRuns extends Migration
 
             $table->timestamp('time_start')->nullable()->comment('开始时间'); //勋章计算：早起
             $table->timestamp('time_end')->nullable()->comment('结束时间');
-            $table->timestamp('time_run')->nullable()->comment('运动时间');   //勋章计算：累计时间、单次
+            $table->integer('time_run', false, false)->nullable()->comment('运动时间s');   //勋章计算：累计时间、单次
 
             $table->string('latitude_start', 20)->nullable()->comment('起点维度');
             $table->string('longitude_start', 20)->nullable()->comment('起点经度');

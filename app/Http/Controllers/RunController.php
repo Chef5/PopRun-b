@@ -59,4 +59,46 @@ class RunController extends Controller
             return returnData(false, '缺少rid');
         }
     }
+
+    //跑步结束
+    public function doEnd(Request $request){
+        if($request->has('ruid')){
+            $run = null;
+            if($request->has('distance') && 
+                $request->has('calorie') && 
+                $request->has('speed_top') && 
+                $request->has('speed_low') && 
+                $request->has('speed') && 
+                $request->has('time_end') && 
+                $request->has('time_run')&& 
+                $request->has('latitude_end')&& 
+                $request->has('longitude_end')&& 
+                $request->has('img'))
+            {
+                if(RRuns::where('ruid', $request->ruid)->update($request->all())){
+                    return returnData(true, '操作成功', RRuns::where('ruid', $request->ruid)->first());
+                }
+                else return returnData(false, '保存失败', null);
+            }else{
+                return returnData(false, '缺少必须参数，已传参数见data', array_keys($request->all()));
+            }
+        }else if($request->has('rid')){
+            $run = new RRuns();
+            try {
+                DB::beginTransaction();
+                    // 跑步初始数据
+                    $run->fill($request->all());
+                    $run->save();
+                DB::commit();
+                // 处理返回数据
+                $data = RRuns::where('ruid', $run->id)->first();
+                return returnData(true, '操作成功', $data);
+            } catch (\Throwable $th) {
+                DB::rollBack();
+                return returnData(false, $th);
+            }
+        }else{
+            return returnData(false, '缺少ruid或者rid');
+        }
+    }
 }

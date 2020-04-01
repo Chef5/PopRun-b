@@ -47,6 +47,8 @@ Route::prefix('run')->group(function () {
     Route::get('/getHitokoto', 'RunController@getHitokoto');
     // 跑步开始
     Route::post('/doStart', 'RunController@doStart');
+    // 跑步结束
+    Route::post('/doEnd', 'RunController@doEnd');
 });
 
 /**
