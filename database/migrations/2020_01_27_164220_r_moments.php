@@ -17,6 +17,7 @@ class RMoments extends Migration
             $table->bigIncrements('moid');
             $table->integer('rid')->foreign('rid')->references('rid')->on('r_users');
             $table->string('text', 500)->nullable()->comment('动态内容');
+            $table->tinyInteger('type')->default(0)->nullable()->comment('类型：0普通动态，1打卡分享');
             $table->timestamps();
         });
     }
