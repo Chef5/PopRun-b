@@ -125,4 +125,6 @@ Route::prefix('admin')->group(function () {
     Route::get('/initData', 'AdminController@initData');
     // 上传勋章图标
     Route::post('/uploadMedal', 'AdminController@uploadMedal');
+    // 数据库调整，图片过渡
+    Route::post('/transferImg', 'AdminController@transferImg');
 });

@@ -5,6 +5,9 @@ namespace App\Http\Controllers;
 use Illuminate\Http\Request;
 use App\RHonors;
 use App\RMedals;
+use App\Images as Img;
+use App\RMomentImgs;
+use App\RActivityImgs;
 use Image;
 use Validator;
 use DB;
@@ -140,6 +143,44 @@ class AdminController extends Controller
             }
         }else{
             return returnData(false, "缺少参数", $request->all());
+        }
+    }
+
+    // 数据库调整，图片过渡
+    public function transferImg(Request $request){
+        if($request->has('key') && $request->has('keyType')){
+            if($request->key == "123123"){
+                $keyType = $request->keyType;
+                $images = null;
+                if($keyType == "moment"){
+                    $images = RMomentImgs::get();
+                }
+                if($keyType == "activity"){
+                    $images = RActivityImgs::get();
+                }
+                try {
+                    DB::beginTransaction();
+                        // 转移数据
+                        foreach($images as $image){
+                            $image = $image->toArray();
+                            $img = new Img();
+                            $img->key = $keyType;
+                            if($keyType == "moment"){ $img->key_id = $image['moid']; unset($image['moid']); }
+                            if($keyType == "activity"){ $img->key_id = $image['acid']; unset($image['acid']); }
+                            $img->fill($image);
+                            $img->save();
+                        }
+                    DB::commit();
+                    return returnData(true, '操作成功', Img::get());
+                } catch (\Throwable $th) {
+                    DB::rollBack();
+                    return returnData(false, $th);
+                }
+            }else{
+                return returnData(false, 'key错误，非法操作', null);
+            }
+        }else{
+            return returnData(false, '没有key或keyType，非法操作', null);
         }
     }
 }
