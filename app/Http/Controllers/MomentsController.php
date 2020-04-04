@@ -9,7 +9,8 @@ use App\RUsers;
 use App\RMoments;
 use App\Comments;
 use App\LinkULikeMs;
-use App\RMomentImgs;
+use App\RMomentImgs; //废弃，使用images
+use App\Images;
 
 class MomentsController extends Controller
 {
@@ -29,9 +30,10 @@ class MomentsController extends Controller
                         if($moment->save()){
                             $original = []; $thumbnail = []; $i = 0;
                             foreach($request->imgs as $img){
-                                $img['moid'] = $moment->id;
-                                $momentImg = new RMomentImgs();
-                                $momentImg->fillable(array_keys($img));
+                                $img['key'] = 'moment';
+                                $img['key_id'] = $moment->id;
+
+                                $momentImg = new Images();
                                 $momentImg->fill($img);
                                 $momentImg->save();
 
@@ -73,7 +75,7 @@ class MomentsController extends Controller
             try {
                 Comments::where('moid', $request->moid)->delete(); //删除评论
                 LinkULikeMs::where('moid', $request->moid)->delete(); //删除点赞
-                RMomentImgs::where('moid', $request->moid)->delete(); //删除图片
+                Images::where('key', 'moment')->where('key_id', $request->moid)->delete(); //删除图片
                 // Stroage::delete()  //删除图片文件  技术原因暂时不做
                 RMoments::where('moid', $request->moid)->where('rid', $request->rid)->delete(); //删除动态
                 DB::commit(); //提交事务
@@ -171,7 +173,7 @@ class MomentsController extends Controller
                                                     ->select('link_u_like_ms.*', 'r_users.img')
                                                     ->get();
                     //获取图片
-                    $imgs = RMomentImgs::where('moid', $moments[$i]['moid'])->get();
+                    $imgs = Images::where('key', 'moment')->where('key_id', $moments[$i]['moid'])->get();
                     $original = []; $thumbnail = [];
                     foreach($imgs as $img){
                         $original []= [
@@ -232,7 +234,7 @@ class MomentsController extends Controller
                                                 ->select('link_u_like_ms.*', 'r_users.img')
                                                 ->get();
                 //获取图片
-                $imgs = RMomentImgs::where('moid', $moments[$n]['moid'])->get();
+                $imgs = Images::where('key', 'moment')->where('key_id', $moments[$n]['moid'])->get();
                 $original = []; $thumbnail = [];
                 foreach($imgs as $img){
                     $original []= [
@@ -281,7 +283,7 @@ class MomentsController extends Controller
                                                 ->select('link_u_like_ms.*', 'r_users.img')
                                                 ->get();
                 //获取图片
-                $imgs = RMomentImgs::where('moid', $request->moid)->get();
+                $imgs = Images::where('key', 'moment')->where('key_id', $request->moid)->get();
                 $original = []; $thumbnail = [];
                 foreach($imgs as $img){
                     $original []= [

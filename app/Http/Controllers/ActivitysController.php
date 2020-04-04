@@ -5,7 +5,8 @@ namespace App\Http\Controllers;
 use Illuminate\Http\Request;
 
 use App\RActivitys;
-use App\RActivityImgs;
+use App\RActivityImgs; //废弃，使用Images
+use App\Images;
 
 class ActivitysController extends Controller
 {
@@ -25,8 +26,10 @@ class ActivitysController extends Controller
                 if($activity->save()){
                     $original = []; $thumbnail = []; $i = 0;
                     foreach($request->imgs as $img){
-                        $img['acid'] = $activity->id;
-                        $activityImg = new RActivityImgs();
+                        $img['key'] = "activity";
+                        $img['key_id'] = $activity->id;
+
+                        $activityImg = new Images();
                         $activityImg->fillable(array_keys($img));
                         $activityImg->fill($img);
                         $activityImg->save();
@@ -71,7 +74,7 @@ class ActivitysController extends Controller
             for($n = 0; $n<count($activitys); $n++){
                 $data[$n] = $activitys[$n];
                 //获取图片
-                $imgs = RActivityImgs::where('acid', $activitys[$n]['acid'])->get();
+                $imgs = Images::where('key', 'activity')->where('key_id', $activitys[$n]['acid'])->get();
                 $original = []; $thumbnail = [];
                 foreach($imgs as $img){
                     $original []= [
@@ -114,7 +117,7 @@ class ActivitysController extends Controller
             for($n = 0; $n<count($activitys); $n++){
                 $data[$n] = $activitys[$n];
                 //获取封面图片
-                $imgs = RActivityImgs::where('acid', $activitys[$n]['acid'])->get();
+                $imgs = Images::where('key', 'activity')->where('key_id', $activitys[$n]['acid'])->get();
                 $cover['original'] = $imgs[$activitys[$n]['cover']]->original;
                 $cover['thumbnail'] = $imgs[$activitys[$n]['cover']]->thumbnail;
                 $data[$n]['cover'] = $cover;
@@ -132,7 +135,7 @@ class ActivitysController extends Controller
                 //获取活动
                 $activity = RActivitys::where('acid', $request->acid)->get()[0]; // 注意：单一数据存在数组中0
                 //获取图片
-                $imgs = RActivityImgs::where('acid', $request->acid)->get();
+                $imgs = Images::where('key', 'activity')->where('key_id', $request->acid)->get();
                 $activity['imgs'] = $imgs;
                 return returnData(true, "操作成功", $activity);
             } catch (\Throwable $th) {
