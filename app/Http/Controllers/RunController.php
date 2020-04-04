@@ -7,6 +7,7 @@ use DB;
 use App\RRuns;
 use App\Hitokoto;
 use App\Images;
+use App\RMoments;
 
 class RunController extends Controller
 {
@@ -112,6 +113,54 @@ class RunController extends Controller
             } catch (\Throwable $th) {
                 DB::rollBack();
                 return returnData(false, $th);
+            }
+        }else{
+            return returnData(false, '缺少ruid或者rid');
+        }
+    }
+
+    //分享到动态圈子
+    public function doShare(Request $request){
+        if($request->has('ruid') && $request->has('rid')){
+            $run = RRuns::where('ruid', $request->ruid)->where('rid', $request->rid)->first();
+            $shareImg = Images::where('key', 'run')->where('key_id', $request->ruid)->first();
+            if($run && $run->isshared==0){
+                if($shareImg || $request->has('text')){ //图片和文字，必须有一个
+                    try {
+                        DB::beginTransaction();
+                        //更新运动分享标志
+                        DB::table('r_runs')
+                            ->where('ruid', $request->ruid)
+                            ->update(['isshared' => 1]);
+                        //新建动态：type=1 打卡分享类型
+                        $moment = new RMoments();
+                        $moment->fillable(['rid', 'text', 'type']);
+                        $moment->fill([
+                            'rid' => $run->rid,
+                            'text' => $request->has('text') ? $request->text : "",
+                            'type' => 1   //打卡分享1
+                        ]);
+                        $moment->save();
+                        //将运动图复制到动态
+                        if($shareImg){
+                            $shareImg = $shareImg->toArray();
+                            $shareImg['key'] = 'moment';
+                            $shareImg['key_id'] = $moment->id;
+                            $image = new Images();
+                            $image->fill($shareImg);
+                            $image->save();
+                        }
+                        DB::commit();
+                        return returnData(true, '操作成功');
+                    } catch (\Throwable $th) {
+                        DB::rollBack();
+                        return returnData(false, $th);
+                    }
+                }else{
+                    return returnData(false, '图片和文字，必须有一个');
+                }
+            }else{
+                return returnData(false, '您已经分享过了', '或者ruid和rid不匹配');
             }
         }else{
             return returnData(false, '缺少ruid或者rid');

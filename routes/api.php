@@ -49,6 +49,8 @@ Route::prefix('run')->group(function () {
     Route::post('/doStart', 'RunController@doStart');
     // 跑步结束
     Route::post('/doEnd', 'RunController@doEnd');
+    // 分享到动态圈子
+    Route::post('/doShare', 'RunController@doShare');
 });
 
 /**
