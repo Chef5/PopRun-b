@@ -6,6 +6,7 @@ use Illuminate\Http\Request;
 use DB;
 use App\RRuns;
 use App\Hitokoto;
+use App\Images;
 
 class RunController extends Controller
 {
@@ -72,10 +73,17 @@ class RunController extends Controller
                 $request->has('time_end') && 
                 $request->has('time_run')&& 
                 $request->has('latitude_end')&& 
-                $request->has('longitude_end')&& 
-                $request->has('img'))
+                $request->has('longitude_end'))
             {
                 if(RRuns::where('ruid', $request->ruid)->update($request->all())){
+                    if($request->has('img')){
+                        $image = new Images();
+                        $img = $request->img;
+                        $img['key'] = 'run';
+                        $img['key_id'] = $request->ruid;
+                        $image->fill($img);
+                        $image->save();
+                    }
                     return returnData(true, '操作成功', RRuns::where('ruid', $request->ruid)->first());
                 }
                 else return returnData(false, '保存失败', null);
@@ -89,6 +97,14 @@ class RunController extends Controller
                     // 跑步初始数据
                     $run->fill($request->all());
                     $run->save();
+                    if($request->has('img')){
+                        $image = new Images();
+                        $img = $request->img;
+                        $img['key'] = 'run';
+                        $img['key_id'] = $run->id;
+                        $image->fill($img);
+                        $image->save();
+                    }
                 DB::commit();
                 // 处理返回数据
                 $data = RRuns::where('ruid', $run->id)->first();

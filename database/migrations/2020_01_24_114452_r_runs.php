@@ -32,7 +32,6 @@ class RRuns extends Migration
             $table->string('latitude_end', 20)->nullable()->comment('终点维度');
             $table->string('longitude_end', 20)->nullable()->comment('终点经度');
 
-            $table->string('img', 200)->nullable()->comment('图像路径');       //original
             $table->string('isshared', 1)->default('0')->comment('是否分享');  //是否分享：0未分享，1已分享
             $table->timestamps();
             // $table->primary(['rid']);

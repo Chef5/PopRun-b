@@ -21,7 +21,6 @@ class RRuns extends Model
         'longitude_start',
         'latitude_end',
         'longitude_end',
-        'img',
         'isshared'
     ];
 }
