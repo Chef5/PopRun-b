@@ -9,6 +9,8 @@ use App\LinkUHs;
 use App\RHonors;
 use App\RMedals;
 use App\LinkUMs;
+use Image;
+use Validator;
 
 class RUsersController extends Controller
 {
@@ -153,6 +155,42 @@ class RUsersController extends Controller
             return returnData(false, '缺少rid', null);
         }
         
+    }
+
+    /** 
+     * 上传头像
+     */
+    public function uploadImg(Request $request){
+        if($request->has('img')){
+            $rules = [
+                'img' => [ 'file','image','max:10240' ]
+            ];
+            $validator = Validator::make($request->all(),$rules);
+            if($validator->fails()){
+                return returnData(false, "校验失败", back()->withErrors($validator)->withInput());
+            }
+            $photo = $request->img;
+            $file_name = uniqid();
+            $file_relative_path = 'resources/userImgs/';
+            $file_path = public_path($file_relative_path);
+            try {
+                if (!is_dir($file_path)){
+                    mkdir($file_path);
+                }
+                //压缩储存图片 resources/userImgs/5e8867ed44bd4.jpg
+                $image = Image::make($photo)
+                                ->resize(200, null, function ($constraint) {$constraint->aspectRatio();})
+                                ->save($file_path.'/'.$file_name.'.'.$photo->getClientOriginalExtension());
+                //处理url
+                $fileurl = 'http://'.$request->server('HTTP_HOST').'/'.$file_relative_path.$file_name.'.'.$photo->getClientOriginalExtension();
+                //返回数据
+                return returnData(true, '上传成功', ['url' => $fileurl]);
+            } catch (\Throwable $th) {
+                return returnData(false, $th);
+            }
+        }else{
+            return returnData(false, "缺少参数", $request->all());
+        }
     }
 
     /**

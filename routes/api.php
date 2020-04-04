@@ -110,6 +110,8 @@ Route::prefix('user')->group(function () {
     Route::post('/getHonor', 'RUsersController@getHonor');
     //获取已获勋章
     Route::post('/getMedal', 'RUsersController@getMedal');
+    //上传头像
+    Route::post('/uploadImg', 'RUsersController@uploadImg');
     //修改个人信息
     Route::post('/doUpdate', 'RUsersController@doUpdate');
     // 注销账号
