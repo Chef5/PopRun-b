@@ -76,18 +76,23 @@ class RunController extends Controller
                 $request->has('latitude_end')&& 
                 $request->has('longitude_end'))
             {
-                if(RRuns::where('ruid', $request->ruid)->update($request->all())){
-                    if($request->has('img')){
-                        $image = new Images();
-                        $img = $request->img;
-                        $img['key'] = 'run';
-                        $img['key_id'] = $request->ruid;
-                        $image->fill($img);
-                        $image->save();
-                    }
+                try {
+                    DB::beginTransaction();
+                        $run = RRuns::where('ruid', $request->ruid)->update($request->all());
+                        if($request->has('img')){
+                            $image = new Images();
+                            $img = $request->img;
+                            $img['key'] = 'run';
+                            $img['key_id'] = $request->ruid;
+                            $image->fill($img);
+                            $image->save();
+                        }
+                    DB::commit();
                     return returnData(true, '操作成功', RRuns::where('ruid', $request->ruid)->first());
+                } catch (\Throwable $th) {
+                    DB::rollBack();
+                    return returnData(false, $th);
                 }
-                else return returnData(false, '保存失败', null);
             }else{
                 return returnData(false, '缺少必须参数，已传参数见data', array_keys($request->all()));
             }

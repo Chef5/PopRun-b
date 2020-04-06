@@ -48,7 +48,7 @@ Route::prefix('run')->group(function () {
     // 跑步开始
     Route::post('/doStart', 'RunController@doStart');
     // 跑步结束
-    Route::post('/doEnd', 'RunController@doEnd');
+    Route::post('/doEnd', 'RunController@doEnd')->middleware('filterTime');
     // 分享到动态圈子
     Route::post('/doShare', 'RunController@doShare');
 });
@@ -113,7 +113,7 @@ Route::prefix('user')->group(function () {
     //上传头像
     Route::post('/uploadImg', 'RUsersController@uploadImg');
     //修改个人信息
-    Route::post('/doUpdate', 'RUsersController@doUpdate');
+    Route::post('/doUpdate', 'RUsersController@doUpdate')->middleware('filterTime');
     // 注销账号
     Route::post('/doUnset', 'RUsersController@doUnset');
 });

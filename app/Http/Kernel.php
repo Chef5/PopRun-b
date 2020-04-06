@@ -62,6 +62,7 @@ class Kernel extends HttpKernel
         'verified' => \Illuminate\Auth\Middleware\EnsureEmailIsVerified::class,
         // 自定义中间件
         'userAuth' => \App\Http\Middleware\UserAuth::class,
+        'filterTime' => \App\Http\Middleware\filterTime::class
     ];
 
     /**
