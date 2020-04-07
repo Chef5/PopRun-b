@@ -22,10 +22,14 @@ server {
 }
 ```
 
+### nginx.conf
+client_max_body_size 30m; 
+
 ### php.ini
 
 ``` she
 cgi.fix_pathinfo=0
+upload_max_filesize 20m
 
 extension=curl
 extension=fileinfo
@@ -35,12 +39,33 @@ extension=openssl
 extension=pdo_mysql
 ```
 
+### my.cnf
+
+[client]
+default-character-set = utf8mb4
+[mysql]
+default-character-set = utf8mb4
+[mysqld]
+character-set-client-handshake = FALSE
+character-set-server = utf8mb4
+collation-server = utf8mb4_unicode_ci
+init_connect='SET NAMES utf8mb4'
+
+ALTER DATABASE poprun CHARACTER SET = utf8mb4 COLLATE = utf8mb4_unicode_ci;
+ALTER TABLE table_name CONVERT TO CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;
+ALTER TABLE table_name CHANGE column_name VARCHAR(191) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;
+
 ### .env
 
 ``` she
 APP_ENV=production
 APP_DEBUG=false
 APP_URL=http://dev.run.nunet.cn
+
+TIMEZONE=Asia/Shanghai
+DB_DATABASE=poprun
+DB_USERNAME=root
+DB_PASSWORD=root
 ```
 
 
@@ -64,3 +89,9 @@ systemctl restart nginx
 systemctl restart php7.2-fpm
 ```
 
+## Update
+
+``` she
+cd /home/dev.run/PopRun-b
+git pull origin master
+```
