@@ -5,7 +5,7 @@ namespace App\Http\Controllers;
 use Illuminate\Http\Request;
 
 use App\RActivitys;
-use App\RCources;
+use App\RCourses;
 use DB;
 use App\RActivityImgs; //废弃，使用Images
 use App\Images;
@@ -151,27 +151,27 @@ class ActivitysController extends Controller
     /** 
      * 创建课程
      */
-    public function doCource(Request $request){
+    public function doCourse(Request $request){
         if($request->has('title') && $request->has('text') && $request->has('img')){
-            $cource = new RCources();
-            $cource->fill([
+            $course = new RCourses();
+            $course->fill([
                 'title' => $request->title,  //课程标题
                 'text' => $request->text,    //课程内容
             ]);
             try {
                 DB::beginTransaction();
-                    $cource->save();
+                    $course->save();
                     $img = $request->img;
                     //保存封面图
-                    $img['key'] = "cource";
-                    $img['key_id'] = $cource->id;
-                    $courceImg = new Images();
-                    $courceImg->fillable(array_keys($img));
-                    $courceImg->fill($img);
-                    $courceImg->save();
+                    $img['key'] = "course";
+                    $img['key_id'] = $course->id;
+                    $courseImg = new Images();
+                    $courseImg->fillable(array_keys($img));
+                    $courseImg->fill($img);
+                    $courseImg->save();
                     // 返回数据
-                    $data = $cource;
-                    $data['rcid'] = $cource->id; unset($data['id']); //修改id为rcid，与数据库保持一致
+                    $data = $course;
+                    $data['rcid'] = $course->id; unset($data['id']); //修改id为rcid，与数据库保持一致
                     $data['img'] = [
                         'original' => $img['original'],
                         'thumbnail' => $img['thumbnail']
@@ -184,6 +184,33 @@ class ActivitysController extends Controller
             }
         }else{
             return returnData(false, "确实标题、内容或者封面图", null);
+        }
+    }
+
+    /** 
+     * 获取课程列表
+     */
+    //获取活动列表
+    public function getCourses(Request $request){
+        $request->has('num') ? $num = $request->num : $num = 2;
+        try {
+            $courses = RCourses::orderBy('created_at', 'desc')
+                                ->select('rcid', 'title')
+                                ->take($num)
+                                ->get();
+            $data = []; //联合数据
+            for($n = 0; $n<count($courses); $n++){
+                $data[$n] = $courses[$n];
+                //获取图片
+                $img = Images::where('key', 'course')->where('key_id', $data[$n]['rcid'])->first();
+                $data[$n]['img'] = [
+                    'original' => $img->original,
+                    'thumbnail' => $img->thumbnail
+                ];
+            }
+            return returnData(true, "操作成功", $data);
+        } catch (\Throwable $th) {
+            return returnData(false, $th);
         }
     }
 }

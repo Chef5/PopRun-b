@@ -94,7 +94,9 @@ Route::prefix('pub')->group(function () {
     // 获取轮播活动详细
     Route::get('/getSwipperDetail', 'ActivitysController@getSwipperDetail');
     // 创建课程
-    Route::post('/doCource', 'ActivitysController@doCource');
+    Route::post('/doCourse', 'ActivitysController@doCourse');
+    // 获取课程列表
+    Route::get('/getCourses', 'ActivitysController@getCourses');
 });
 
 /**

@@ -4,7 +4,7 @@ use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
 
-class RCources extends Migration
+class RCourses extends Migration
 {
     /**
      * Run the migrations.
@@ -13,7 +13,7 @@ class RCources extends Migration
      */
     public function up()
     {
-        Schema::create('r_cources', function (Blueprint $table) {
+        Schema::create('r_courses', function (Blueprint $table) {
             $table->bigIncrements('rcid');
             $table->string('title')->nullable()->comment('教程标题');
             $table->longText('text')->nullable()->comment('教程内容');
@@ -28,6 +28,6 @@ class RCources extends Migration
      */
     public function down()
     {
-        Schema::dropIfExists('r_cources');
+        Schema::dropIfExists('r_courses');
     }
 }
