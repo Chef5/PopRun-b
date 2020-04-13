@@ -114,8 +114,10 @@ Route::prefix('user')->group(function () {
     Route::post('/uploadImg', 'RUsersController@uploadImg');
     //修改个人信息
     Route::post('/doUpdate', 'RUsersController@doUpdate')->middleware('filterTime');
-    // 注销账号
+    //注销账号
     Route::post('/doUnset', 'RUsersController@doUnset');
+    //隐私设置
+    Route::post('/doSettings', 'RUsersController@doSettings')->middleware('filterTime');
 });
 
 /**

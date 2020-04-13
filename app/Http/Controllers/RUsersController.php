@@ -251,6 +251,33 @@ class RUsersController extends Controller
         }
     }
 
+    /** 
+     * 隐私设置
+     */
+    public function doSettings(Request $request){
+        if ($request->has('rid')) {
+            $setting = null;
+            try {
+                // 获取隐私设置数据
+                $setting = RSettings::where('rid', $request->rid);
+                // 更新
+                if($setting->first()){
+                    if($setting->update($request->all())){
+                        $data = RSettings::where('rid', $request->rid)->first();
+                        return returnData(true, '操作成功', $data);
+                    }
+                    else return returnData(false, '保存失败', null);
+                }else{
+                    return returnData(false, '读取数据库失败', null);
+                }
+            } catch (\Throwable $th) {
+                return returnData(false, $th);
+            }
+        }else{
+            return returnData(false, '缺少rid', null);
+        }
+    }
+
     // 初始化隐私设置
     private function initProvicySettings($rid){
         if(isset($rid)){
