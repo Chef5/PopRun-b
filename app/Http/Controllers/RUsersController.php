@@ -278,6 +278,21 @@ class RUsersController extends Controller
         }
     }
 
+    /** 
+     * 隐私设置-重置
+     */
+    public function resetSettings(Request $request){
+        if ($request->has('rid')){
+            if($this->initProvicySettings($request->rid)){
+                return returnData(true, '操作成功', RSettings::where('rid', $request->rid)->first());
+            }else{
+                return returnData(false, '重置失败', null);
+            }
+        }else{
+            return returnData(false, '缺少rid', null);
+        }
+    }
+
     // 初始化隐私设置
     private function initProvicySettings($rid){
         if(isset($rid)){

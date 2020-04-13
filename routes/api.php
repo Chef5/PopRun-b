@@ -118,6 +118,8 @@ Route::prefix('user')->group(function () {
     Route::post('/doUnset', 'RUsersController@doUnset');
     //隐私设置
     Route::post('/doSettings', 'RUsersController@doSettings')->middleware('filterTime');
+    //隐私设置-重置
+    Route::post('/resetSettings', 'RUsersController@resetSettings');
 });
 
 /**
