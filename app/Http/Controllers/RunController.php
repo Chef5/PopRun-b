@@ -18,25 +18,33 @@ class RunController extends Controller
         $curl = curl_init();
         curl_setopt($curl, CURLOPT_URL, $url);
         curl_setopt($curl, CURLOPT_RETURNTRANSFER, 1);
-        $returnjson=curl_exec($curl);
-        if($returnjson){
-            //整理返回数据
-            $json = json_decode($returnjson);
-            if($json->code == 200){
-                $hitokoto = new Hitokoto();
-                $hitokoto['hitokoto'] = $json->data->hitokoto;
-                $hitokoto['type'] = $json->data->type;
-                $hitokoto['from'] = $json->data->from;
-                $hitokoto['creator'] = $json->data->creator;
-                $hitokoto->save();
-                $json->data->id = $hitokoto->id;
-                return returnData(true, "操作成功", $json->data);
-            }else{
-                return returnData(false, $json);
+        $data = [];
+        for($i=0; $i<10; $i++){
+            $returnjson=curl_exec($curl);
+            if($returnjson){
+                //整理返回数据
+                $json = json_decode($returnjson);
+                if($json->code == 200){
+                    $hitokoto = new Hitokoto();
+                    $hitokoto['hitokoto'] = $json->data->hitokoto;
+                    $hitokoto['type'] = $json->data->type;
+                    $hitokoto['from'] = $json->data->from;
+                    $hitokoto['creator'] = $json->data->creator;
+                    $hitokoto->save();
+                    $json->data->id = $hitokoto->id;
+                    array_push($data, $json->data);
+                    // return returnData(true, "操作成功", $json->data);
+                    if(count($data) == 5) break;
+                }
+                // else{
+                //     return returnData(false, $json);
+                // }
             }
-        }else{
-            return returnData(false, curl_error($curl));
+            // else{
+            //     return returnData(false, curl_error($curl));
+            // }
         }
+        return returnData(true, "操作成功", $data);
     }
 
     //跑步开始
