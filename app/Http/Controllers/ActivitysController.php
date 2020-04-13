@@ -213,4 +213,27 @@ class ActivitysController extends Controller
             return returnData(false, $th);
         }
     }
+    
+    /** 
+     * 获取课程列表
+     */
+    //获取活动列表
+    public function getCourseDetail(Request $request){
+        if($request->has('rcid')){
+            try {
+                $course = RCourses::where('rcid', $request->rcid)->first();
+                //获取图片
+                $img = Images::where('key', 'course')->where('key_id', $course['rcid'])->first();
+                $course['img'] = [
+                    'original' => $img->original,
+                    'thumbnail' => $img->thumbnail
+                ];
+                return returnData(true, "操作成功", $course);
+            } catch (\Throwable $th) {
+                return returnData(false, $th);
+            }
+        }else{
+            return returnData(false, "缺少课程rcid");
+        }
+    }
 }

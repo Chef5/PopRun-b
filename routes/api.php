@@ -97,6 +97,8 @@ Route::prefix('pub')->group(function () {
     Route::post('/doCourse', 'ActivitysController@doCourse');
     // 获取课程列表
     Route::get('/getCourses', 'ActivitysController@getCourses');
+    // 获取单个课程详细
+    Route::get('/getCourseDetail', 'ActivitysController@getCourseDetail');
 });
 
 /**
