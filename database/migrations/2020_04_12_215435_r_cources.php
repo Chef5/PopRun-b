@@ -15,6 +15,7 @@ class RCources extends Migration
     {
         Schema::create('r_cources', function (Blueprint $table) {
             $table->bigIncrements('rcid');
+            $table->string('title')->nullable()->comment('教程标题');
             $table->longText('text')->nullable()->comment('教程内容');
             $table->timestamps();
         });

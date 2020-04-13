@@ -5,6 +5,8 @@ namespace App\Http\Controllers;
 use Illuminate\Http\Request;
 
 use App\RActivitys;
+use App\RCources;
+use DB;
 use App\RActivityImgs; //废弃，使用Images
 use App\Images;
 
@@ -143,6 +145,45 @@ class ActivitysController extends Controller
             }
         }else{
             return returnData(false, "缺少acid", null);
+        }
+    }
+
+    /** 
+     * 创建课程
+     */
+    public function doCource(Request $request){
+        if($request->has('title') && $request->has('text') && $request->has('img')){
+            $cource = new RCources();
+            $cource->fill([
+                'title' => $request->title,  //课程标题
+                'text' => $request->text,    //课程内容
+            ]);
+            try {
+                DB::beginTransaction();
+                    $cource->save();
+                    $img = $request->img;
+                    //保存封面图
+                    $img['key'] = "cource";
+                    $img['key_id'] = $cource->id;
+                    $courceImg = new Images();
+                    $courceImg->fillable(array_keys($img));
+                    $courceImg->fill($img);
+                    $courceImg->save();
+                    // 返回数据
+                    $data = $cource;
+                    $data['rcid'] = $cource->id; unset($data['id']); //修改id为rcid，与数据库保持一致
+                    $data['img'] = [
+                        'original' => $img['original'],
+                        'thumbnail' => $img['thumbnail']
+                    ];
+                DB::commit();
+                return returnData(true, "操作成功", $data);
+            } catch (\Throwable $th) {
+                DB::rollBack();
+                return returnData(false, $th);
+            }
+        }else{
+            return returnData(false, "确实标题、内容或者封面图", null);
         }
     }
 }

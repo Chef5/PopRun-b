@@ -93,6 +93,8 @@ Route::prefix('pub')->group(function () {
     Route::get('/getSwipper', 'ActivitysController@getSwipper');
     // 获取轮播活动详细
     Route::get('/getSwipperDetail', 'ActivitysController@getSwipperDetail');
+    // 创建课程
+    Route::post('/doCource', 'ActivitysController@doCource');
 });
 
 /**
