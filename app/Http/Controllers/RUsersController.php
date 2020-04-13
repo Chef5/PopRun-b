@@ -9,6 +9,7 @@ use App\LinkUHs;
 use App\RHonors;
 use App\RMedals;
 use App\LinkUMs;
+use App\RSettings;
 use Image;
 use Validator;
 
@@ -33,6 +34,8 @@ class RUsersController extends Controller
                         'rid' =>  $user->id,
                         'hoid' => $lv1->hoid
                     ]);
+                    // 初始化隐私设置
+                    $this->initProvicySettings($user->id);
                     $linkhonor->save();
                 DB::commit();
                 // 获取用户基本信息
@@ -245,6 +248,24 @@ class RUsersController extends Controller
             }
         }else{
             return returnData(false, '缺少openid或rid', null);
+        }
+    }
+
+    // 初始化隐私设置
+    private function initProvicySettings($rid){
+        if(isset($rid)){
+            $user = RUsers::where('rid', $rid)->get();
+            if($user){
+                DB::table('r_settings')->where('rid', $rid)->delete();
+                $setting = new RSettings();
+                $setting->rid = $rid;
+                $setting->job = 1; $setting->team = 1; $setting->run = 1;
+                return $setting->save();
+            }else{
+                return false;
+            }
+        }else{
+            return false;
         }
     }
 }

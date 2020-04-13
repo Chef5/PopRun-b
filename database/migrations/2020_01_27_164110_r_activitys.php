@@ -15,12 +15,11 @@ class RActivitys extends Migration
     {
         Schema::create('r_activitys', function (Blueprint $table) {
             $table->increments('acid', 10);
-            $table->integer('rid')->foreign('rid')->references('rid')->on('r_users');
-            $table->string('title', 50)->nullable();
+            $table->integer('meid')->foreign('meid')->references('meid')->on('r_medals');
+            $table->string('title', 50)->nullable()->comment('标题');
             $table->string('desc', 200)->nullable()->comment('简要描述');
-            $table->string('cover', 200)->nullable()->comment('封面图');
             $table->longText('content')->nullable()->comment('活动内容');
-            $table->string('period', 10)->nullable()->comment('持续时长');
+            $table->timestamp('period')->nullable()->comment('截止时间');
             $table->timestamps();
         });
     }

@@ -18,7 +18,7 @@ class RUsers extends Migration
             $table->string('openid', 50)->unique();
             $table->string('nickname', 20)->nullable()->comment('昵称');
             $table->string('team', 50)->nullable()->comment('校区');
-            $table->string('sex', 1)->nullable()->comment('性别');
+            $table->tinyInteger('sex')->nullable()->comment('性别');
             $table->string('img', 200)->nullable()->comment('头像');
             $table->string('info', 200)->nullable()->comment('签名');
             $table->string('job', 50)->nullable()->comment('职业');
