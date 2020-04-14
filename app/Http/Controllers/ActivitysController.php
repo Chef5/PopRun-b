@@ -10,6 +10,7 @@ use DB;
 use App\RActivityImgs; //废弃，使用Images
 use App\Images;
 use App\RMedals;
+use App\LinkUAs;
 
 class ActivitysController extends Controller
 {
@@ -209,7 +210,7 @@ class ActivitysController extends Controller
                 return returnData(false, $th);
             }
         }else{
-            return returnData(false, "确实标题、内容或者封面图", null);
+            return returnData(false, "缺少标题、内容或者封面图", null);
         }
     }
 
@@ -258,6 +259,33 @@ class ActivitysController extends Controller
             }
         }else{
             return returnData(false, "缺少课程rcid");
+        }
+    }
+
+    /** 
+     * 报名参加活动
+     */
+    public function signActivity(Request $request){
+        if($request->has('rid') && $request->has('acid')){
+            $signlog = LinkUAs::where('rid', $request->rid)->where('acid', $request->acid)->get();
+            if(count($signlog)==0){
+                $sign = new LinkUAs();
+                $sign->fill($request->all());
+                try {
+                    DB::beginTransaction();
+                        $sign->save();
+                    DB::commit();
+                    unset($sign['id']);
+                    return returnData(true, "报名成功", $sign);
+                } catch (\Throwable $th) {
+                    DB::rollBack();
+                    return returnData(false, $th);
+                }
+            }else{
+                return returnData(false, "您已经报名过了", $signlog);
+            }
+        }else{
+            return returnData(false, "缺失rid或acid", null);
         }
     }
 }
