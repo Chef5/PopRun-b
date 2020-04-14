@@ -13,7 +13,9 @@ use App\RMedals;
 
 class ActivitysController extends Controller
 {
-    //创建活动
+    /** 
+     * 创建活动
+     */
     public function doActivity(Request $request){
         if($request->has('title') && $request->has('desc') && $request->has('cover') && $request->has('meid')){
             try {
@@ -74,7 +76,9 @@ class ActivitysController extends Controller
         }
     }
 
-    //获取活动列表
+    /** 
+     * 获取活动列表
+     */
     public function getList(Request $request){
         $request->has('pageindex') ? $pageindex = $request->pageindex+1 : $pageindex = 1;  //当前页 1,2,3,...,首次查询可以传0
         $request->has('pagesize') ? $pagesize = $request->pagesize : $pagesize = 10;  //页面大小
@@ -107,22 +111,26 @@ class ActivitysController extends Controller
         }
     }
 
-    //获取轮播活动
+    /** 
+     * 获取轮播活动
+     */
     public function getSwipper(Request $request){
         try {
+            $num = $request->has('num') ? $request->num : 3;
             $activitys = RActivitys::inRandomOrder()
                                 // ->latest()   //ordered by the created_at column
-                                ->limit(3)
+                                ->limit($num)
                                 ->select('acid', 'title', 'desc', 'cover')
                                 ->get();
             $data = []; //动态联合数据
             for($n = 0; $n<count($activitys); $n++){
                 $data[$n] = $activitys[$n];
-                //获取封面图片
-                $imgs = Images::where('key', 'activity')->where('key_id', $activitys[$n]['acid'])->get();
-                $cover['original'] = $imgs[$activitys[$n]['cover']]->original;
-                $cover['thumbnail'] = $imgs[$activitys[$n]['cover']]->thumbnail;
-                $data[$n]['cover'] = $cover;
+                //获取封面图
+                $cover = Images::where('id', $data[$n]['cover'])->first();
+                $data[$n]['cover'] = [ //封面id返回替换为封面图片
+                    'original' => $cover['original'],
+                    'thumbnail' => $cover['thumbnail']
+                ];
             }
             return returnData(true, "操作成功", $data);
         } catch (\Throwable $th) {
@@ -130,7 +138,9 @@ class ActivitysController extends Controller
         }
     }
 
-    //获取活动详细
+    /**
+     * 获取活动详细
+     */
     public function getDetail(Request $request){
         if($request->has('acid')){
             try {
