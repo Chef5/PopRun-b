@@ -86,14 +86,6 @@ class ActivitysController extends Controller
             $data = []; //动态联合数据
             for($n = 0; $n<count($activitys); $n++){
                 $data[$n] = $activitys[$n];
-                // //获取图片
-                // $imgs = Images::where('activity', 'activity')->where('key_id', $activitys[$n]['acid'])->get();
-                // $original = []; $thumbnail = [];
-                // foreach($imgs as $img){
-                //     $original = $img->original;
-                //     $thumbnail = $img->thumbnail;
-                // }
-                // $data[$n]['imgs'] = [ $original, $thumbnail ];
                 //获取封面图
                 $cover = Images::where('id', $data[$n]['cover'])->first();
                 $data[$n]['cover'] = [ //封面id返回替换为封面图片
@@ -138,15 +130,31 @@ class ActivitysController extends Controller
         }
     }
 
-    //获取轮播活动详细
-    public function getSwipperDetail(Request $request){
+    //获取活动详细
+    public function getDetail(Request $request){
         if($request->has('acid')){
             try {
                 //获取活动
                 $activity = RActivitys::where('acid', $request->acid)->get()[0]; // 注意：单一数据存在数组中0
                 //获取图片
                 $imgs = Images::where('key', 'activity')->where('key_id', $request->acid)->get();
-                $activity['imgs'] = $imgs;
+                $original = []; $thumbnail = [];
+                foreach($imgs as $img){
+                    $original []= $img->original;
+                    $thumbnail []= $img->thumbnail;
+                }
+                $activity['imgs'] = [ 
+                    'original' => $original,
+                    'thumbnail' => $thumbnail
+                ];
+                //获取封面图
+                $cover = Images::where('id',$activity['cover'])->first();
+                $activity['cover'] = [ //封面id返回替换为封面图片
+                    'original' => $cover['original'],
+                    'thumbnail' => $cover['thumbnail']
+                ];
+                 //获取勋章
+                 $activity['medal'] = RMedals::where('meid', $activity['meid'])->first();
                 return returnData(true, "操作成功", $activity);
             } catch (\Throwable $th) {
                 return returnData(false, $th);
