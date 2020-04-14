@@ -17,6 +17,7 @@ class RActivitys extends Migration
             $table->increments('acid', 10);
             $table->integer('meid')->foreign('meid')->references('meid')->on('r_medals');
             $table->string('title', 50)->nullable()->comment('标题');
+            $table->tinyInteger('cover')->default(0)->comment('封面图id');
             $table->string('desc', 200)->nullable()->comment('简要描述');
             $table->longText('content')->nullable()->comment('活动内容');
             $table->timestamp('period')->nullable()->comment('截止时间');

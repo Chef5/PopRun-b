@@ -15,7 +15,7 @@ class Images extends Migration
     {
         Schema::create('images', function (Blueprint $table) {
             $table->bigIncrements('id');
-            $table->string('key', 10)->comment('索引串：moment,activity,run,cource');
+            $table->string('key', 10)->comment('索引串：moment,activity,activity-c,run,course');
             $table->bigInteger('key_id')->comment('对应表id');
             $table->string('name', 200)->comment('源名称');
             $table->string('store', 200)->comment('存储名称');

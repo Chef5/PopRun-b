@@ -9,23 +9,37 @@ use App\RCourses;
 use DB;
 use App\RActivityImgs; //废弃，使用Images
 use App\Images;
+use App\RMedals;
 
 class ActivitysController extends Controller
 {
     //创建活动
     public function doActivity(Request $request){
-        if($request->has('rid')){
-            if($request->has('title') && $request->has('desc')){
-                $activity = new RActivitys();
-                $activity->fill([
-                    'rid' => $request->rid,
-                    'title' => $request->title,  //标题
-                    'desc' => $request->desc,    //描述
-                    'cover' => $request->has('cover') ? $request->cover : 0,  //取第几张图片为封面图，默认第一张
-                    'content' => $request->has('content') ? $request->content : "",  //内容
-                    'period' => $request->has('period') ? $request->period : strtotime("+30 days")  //有效时间
-                ]);
-                if($activity->save()){
+        if($request->has('title') && $request->has('desc') && $request->has('cover') && $request->has('meid')){
+            try {
+                DB::beginTransaction();
+                    //保存封面图
+                    $cover = $request->cover;
+                    $cover['key'] = "activity-c";
+                    $cover['key_id'] = 0;
+                    $coverImg = new Images();
+                    $coverImg->fillable(array_keys($cover));
+                    $coverImg->fill($cover);
+                    $coverImg->save();
+
+                    //保存活动
+                    $activity = new RActivitys();
+                    $activity->fill([
+                        'title' => $request->title,  //标题
+                        'desc' => $request->desc,    //描述
+                        'cover' => $coverImg->id,    //封面图id
+                        'meid' => $request->meid,    //勋章meid
+                        'content' => $request->has('content') ? $request->content : "",  //内容
+                        'period' => $request->has('period') ? $request->period : date('Y-m-d H:i:s', strtotime("+30 days"))  //截止时间
+                    ]);
+                    $activity->save();
+
+                    //保存内容图片
                     $original = []; $thumbnail = []; $i = 0;
                     foreach($request->imgs as $img){
                         $img['key'] = "activity";
@@ -36,30 +50,27 @@ class ActivitysController extends Controller
                         $activityImg->fill($img);
                         $activityImg->save();
 
-                        $original[$i]['url'] = $img['original'];
-                        $original[$i]['width'] = $img['width'];
-                        $original[$i]['height'] = $img['height'];
-                        $thumbnail[$i]['url'] = $img['thumbnail'];
-                        $thumbnail[$i]['width'] = $img['mwidth'];
-                        $thumbnail[$i]['height'] = $img['mheight'];
+                        $original[$i] = $img['original'];
+                        $thumbnail[$i] = $img['thumbnail'];
                         $i++;
                     }
-                    // 返回数据
-                    $data = $activity;
-                    $data['acid'] = $activity->id; unset($data['id']); //修改id为moid，与数据库保持一致
-                    $data['imgs'] = [
-                        'original' => $original,
-                        'thumbnail' => $thumbnail
-                    ];
-                    return returnData(true, "操作成功", $data);
-                }else{
-                    return returnData(false, "保存失败", null);
-                }
-            }else{
-                return returnData(false, "标题、描述缺一不可", null);
+                // DB::commit();
+                // 返回数据
+                $data = $activity;
+                $data['acid'] = $activity->id; unset($data['id']); //修改id为acid，与数据库保持一致
+                $data['imgs'] = [ $original, $thumbnail];
+                $data['cover'] = [ //封面id返回替换为封面图片
+                    'original' => $cover['original'],
+                    'thumbnail' => $cover['thumbnail']
+                ];
+                $data['medal'] = RMedals::where('meid', $data->meid)->first(); unset($data['meid']); //勋章返回替换
+                return returnData(true, "操作成功", $data);
+            } catch (\Throwable $th) {
+                DB::rollBack();
+                return returnData(false, $th);
             }
         }else{
-            return returnData(false, "缺rid", null);
+            return returnData(false, "标题、描述、封面图、勋章id缺一不可", null);
         }
     }
 
@@ -190,7 +201,6 @@ class ActivitysController extends Controller
     /** 
      * 获取课程列表
      */
-    //获取活动列表
     public function getCourses(Request $request){
         $request->has('num') ? $num = $request->num : $num = 2;
         try {
@@ -217,7 +227,6 @@ class ActivitysController extends Controller
     /** 
      * 获取课程列表
      */
-    //获取活动列表
     public function getCourseDetail(Request $request){
         if($request->has('rcid')){
             try {
