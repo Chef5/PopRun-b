@@ -304,4 +304,20 @@ class ActivitysController extends Controller
             return returnData(false, "缺失rid或acid", null);
         }
     }
+
+    /** 
+     * 获取已报名人数
+     */
+    public function getSignNum(Request $request){
+        if($request->has('acid')){
+            try {
+                $signlog = LinkUAs::where('acid', $request->acid)->get();
+                return returnData(true, "操作成功", count($signlog));
+            } catch (\Throwable $th) {
+                return returnData(false, "操作失败", $th);
+            }
+        }else{
+            return returnData(false, "缺少acid", null);
+        }
+    }
 }

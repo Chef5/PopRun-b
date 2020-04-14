@@ -103,6 +103,8 @@ Route::prefix('pub')->group(function () {
     Route::post('/signActivity', 'ActivitysController@signActivity');
     // 查询用户是否已报名
     Route::get('/signActivityCheck', 'ActivitysController@signActivityCheck');
+    // 获取已报名人数
+    Route::get('/getSignNum', 'ActivitysController@getSignNum');
 });
 
 /**
