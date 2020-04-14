@@ -288,4 +288,20 @@ class ActivitysController extends Controller
             return returnData(false, "缺失rid或acid", null);
         }
     }
+
+    /** 
+     * 查询用户是否已报名
+     */
+    public function signActivityCheck(Request $request){
+        if($request->has('rid') && $request->has('acid')){
+            $signlog = LinkUAs::where('rid', $request->rid)->where('acid', $request->acid)->get();
+            if(count($signlog)==0){
+                return returnData(false, "未报名", null);
+            }else{
+                return returnData(true, "已报名", $signlog);
+            }
+        }else{
+            return returnData(false, "缺失rid或acid", null);
+        }
+    }
 }

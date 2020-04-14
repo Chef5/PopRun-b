@@ -99,8 +99,10 @@ Route::prefix('pub')->group(function () {
     Route::get('/getCourses', 'ActivitysController@getCourses');
     // 获取单个课程详细
     Route::get('/getCourseDetail', 'ActivitysController@getCourseDetail');
-    // 报名参见活动
+    // 报名参加活动
     Route::post('/signActivity', 'ActivitysController@signActivity');
+    // 查询用户是否已报名
+    Route::get('/signActivityCheck', 'ActivitysController@signActivityCheck');
 });
 
 /**
