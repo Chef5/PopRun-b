@@ -54,7 +54,7 @@ class ActivitysController extends Controller
                         $thumbnail[$i] = $img['thumbnail'];
                         $i++;
                     }
-                // DB::commit();
+                DB::commit();
                 // 返回数据
                 $data = $activity;
                 $data['acid'] = $activity->id; unset($data['id']); //修改id为acid，与数据库保持一致
@@ -86,25 +86,22 @@ class ActivitysController extends Controller
             $data = []; //动态联合数据
             for($n = 0; $n<count($activitys); $n++){
                 $data[$n] = $activitys[$n];
-                //获取图片
-                $imgs = Images::where('key', 'activity')->where('key_id', $activitys[$n]['acid'])->get();
-                $original = []; $thumbnail = [];
-                foreach($imgs as $img){
-                    $original []= [
-                        "url" => $img->original,
-                        "width" => $img->width,
-                        "height" => $img->height
-                    ];
-                    $thumbnail []= [
-                        "url" => $img->thumbnail,
-                        "width" => $img->mwidth,
-                        "height" => $img->mheight
-                    ];
-                }
-                $data[$n]['imgs'] = [
-                    'original' => $original,
-                    'thumbnail' => $thumbnail
+                // //获取图片
+                // $imgs = Images::where('activity', 'activity')->where('key_id', $activitys[$n]['acid'])->get();
+                // $original = []; $thumbnail = [];
+                // foreach($imgs as $img){
+                //     $original = $img->original;
+                //     $thumbnail = $img->thumbnail;
+                // }
+                // $data[$n]['imgs'] = [ $original, $thumbnail ];
+                //获取封面图
+                $cover = Images::where('id', $data[$n]['cover'])->first();
+                $data[$n]['cover'] = [ //封面id返回替换为封面图片
+                    'original' => $cover['original'],
+                    'thumbnail' => $cover['thumbnail']
                 ];
+                 //获取勋章
+                $data[$n]['medal'] = RMedals::where('meid', $data[$n]['meid'])->first();
             }
             //返回数据处理
             $re = [
