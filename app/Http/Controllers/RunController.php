@@ -8,10 +8,13 @@ use App\RRuns;
 use App\Hitokoto;
 use App\Images;
 use App\RMoments;
+use App\RUsers;
 
 class RunController extends Controller
 {
-    //获取随机一言
+    /** 
+     * 获取随机一言
+     */
     public function getHitokoto(Request $request){
         if($request->has('type')) $url = 'http://v1.alapi.cn/api/hitokoto?format=json&type='.$request->type;
         else $url = 'http://v1.alapi.cn/api/hitokoto?format=json';
@@ -47,7 +50,9 @@ class RunController extends Controller
         return returnData(true, "操作成功", $data);
     }
 
-    //跑步开始
+    /**  
+     * 跑步开始
+     */
     public function doStart(Request $request){
         if($request->has('rid')){
             $run = new RRuns();
@@ -70,7 +75,9 @@ class RunController extends Controller
         }
     }
 
-    //跑步结束
+    /**  
+     * 跑步结束
+     */
     public function doEnd(Request $request){
         if($request->has('ruid')){
             $run = null;
@@ -132,7 +139,9 @@ class RunController extends Controller
         }
     }
 
-    //分享到动态圈子
+    /**  
+     * 分享到动态圈子
+     */
     public function doShare(Request $request){
         if($request->has('ruid') && $request->has('rid')){
             $run = RRuns::where('ruid', $request->ruid)->where('rid', $request->rid)->first();
@@ -177,6 +186,40 @@ class RunController extends Controller
             }
         }else{
             return returnData(false, '缺少ruid或者rid');
+        }
+    }
+
+    /** 
+     * 获取周榜
+     */
+    public function getWeekrank(Request $request){
+        if($request->has('team')){
+            $timeStart = date('Y-m-d', strtotime("this week"))." 00:00:00";
+            $timeEnd = date('Y-m-d', strtotime("+1 week -1 day", strtotime("this week")))." 23:59:59";
+            try {
+                $top100 = RRuns::join('r_users', 'r_users.rid', '=', 'r_runs.rid')
+                                ->where('r_users.team', $request->team)
+                                ->whereBetween('r_runs.created_at', [$timeStart, $timeEnd])
+                                ->select(
+                                    DB::raw(
+                                        'r_users.rid, 
+                                        r_users.nickname, 
+                                        r_users.img, 
+                                        r_users.team, 
+                                        cast(sum(r_runs.distance) as decimal(15,2)) as sumD,
+                                        sum(r_runs.time_run) as sumT, 
+                                        cast(avg(r_runs.speed) as decimal(15,2)) as avgS'
+                                        ))
+                                ->groupBy('r_runs.rid')
+                                ->orderBy('sumD', 'desc')
+                                ->limit(100)
+                                ->get();
+                return returnData(true, "操作成功", $top100->toArray());
+            } catch (\Throwable $th) {
+                return returnData(false, $th);
+            }
+        }else{
+            return returnData(false, '缺少team校区');
         }
     }
 }

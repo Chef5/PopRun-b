@@ -51,6 +51,8 @@ Route::prefix('run')->group(function () {
     Route::post('/doEnd', 'RunController@doEnd')->middleware('filterTime');
     // 分享到动态圈子
     Route::post('/doShare', 'RunController@doShare');
+    // 获取周榜
+    Route::get('/getWeekrank', 'RunController@getWeekrank');
 });
 
 /**
