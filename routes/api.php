@@ -53,6 +53,8 @@ Route::prefix('run')->group(function () {
     Route::post('/doShare', 'RunController@doShare');
     // 获取周榜
     Route::get('/getWeekrank', 'RunController@getWeekrank');
+    // 获取月榜
+    Route::get('/getMonthrank', 'RunController@getMonthrank');
 });
 
 /**
