@@ -11,6 +11,7 @@ use App\Comments;
 use App\LinkULikeMs;
 use App\RMomentImgs; //废弃，使用images
 use App\Images;
+use App\Http\Controllers\SystemController as System;
 
 class MomentsController extends Controller
 {
@@ -27,34 +28,38 @@ class MomentsController extends Controller
                         'text' => $request->has('text') ? $request->text : ""
                     ]);
                     try {
-                        if($moment->save()){
-                            $original = []; $thumbnail = []; $i = 0;
-                            foreach($request->imgs as $img){
-                                $img['key'] = 'moment';
-                                $img['key_id'] = $moment->id;
-
-                                $momentImg = new Images();
-                                $momentImg->fill($img);
-                                $momentImg->save();
-
-                                $original[$i]['url'] = $img['original'];
-                                $original[$i]['width'] = $img['width'];
-                                $original[$i]['height'] = $img['height'];
-                                $thumbnail[$i]['url'] = $img['thumbnail'];
-                                $thumbnail[$i]['width'] = $img['mwidth'];
-                                $thumbnail[$i]['height'] = $img['mheight'];
-                                $i++;
-                            }
+                        DB::beginTransaction();
+                            $moment->save();
                             // 返回数据
                             $data = $moment;
+                            if($request->has('imgs')){
+                                $original = []; $thumbnail = []; $i = 0;
+                                foreach($request->imgs as $img){
+                                    $img['key'] = 'moment';
+                                    $img['key_id'] = $moment->id;
+
+                                    $momentImg = new Images();
+                                    $momentImg->fill($img);
+                                    $momentImg->save();
+
+                                    $original[$i]['url'] = $img['original'];
+                                    $original[$i]['width'] = $img['width'];
+                                    $original[$i]['height'] = $img['height'];
+                                    $thumbnail[$i]['url'] = $img['thumbnail'];
+                                    $thumbnail[$i]['width'] = $img['mwidth'];
+                                    $thumbnail[$i]['height'] = $img['mheight'];
+                                    $i++;
+                                }
+                                $data['imgs'] = [
+                                    'original' => $original,
+                                    'thumbnail' => $thumbnail
+                                ];
+                            }
                             $data['moid'] = $moment->id; unset($data['id']); //修改id为moid，与数据库保持一致
-                            $data['imgs'] = [
-                                'original' => $original,
-                                'thumbnail' => $thumbnail
-                            ];
-                            return returnData(true, "操作成功", $data);
-                        }
+                        DB::commit();
+                        return returnData(true, "操作成功", $data);
                     } catch (\Throwable $th) {
+                        DB::rollback();
                         return returnData(false, $th);
                     }
                 }else{
@@ -91,7 +96,7 @@ class MomentsController extends Controller
 
     // 发表评论 遗留：缺少判断是否存在moid
     public function doComment(Request $request){
-        if($request->has('rid') && $request->has('moid')){
+        if($request->has('rid') && $request->has('moid') && $request->has('comment')){
             $comment = new Comments();
             $comment->fill([
                 'rid' => $request->rid,
@@ -99,21 +104,31 @@ class MomentsController extends Controller
                 'comment' => $request->comment
             ]);
             try {
-                if($comment->save()){
+                DB::beginTransaction();
+                    $comment->save();
                     // 返回数据
                     $data = $comment;
                     $data['coid'] = $comment->id; unset($data['id']); //修改id为coid，与数据库保持一致
-                    return returnData(true, "操作成功", $data);
-                }
+                DB::commit();
+                //生成通知信息
+                $moment = RMoments::where('moid', $request->moid)->first();
+                $notice = System::systemNotice([
+                    'from' => $data->rid, 
+                    'to' => $moment->rid, 
+                    'type' => 2, 
+                    'msg' => $data->comment
+                ]);
+                return returnData(true, "操作成功", $data);
             } catch (\Throwable $th) {
+                DB::rollback();
                 return returnData(false, $th);
             }
         }else{
-            return returnData(false, "缺rid或者moid", null);
+            return returnData(false, "缺rid、moid或者评论内容", null);
         }
     }
 
-    // 点赞  遗留：缺少是否已点赞判断
+    // 点赞
     public function doLike(Request $request){
         if($request->has('rid') && $request->has('moid')){
             $like = new LinkULikeMs();
@@ -122,12 +137,18 @@ class MomentsController extends Controller
                 'moid' => $request->moid
             ]);
             try {
-                if($like->save()){
-                    return returnData(true, "操作成功", $like);
-                }else{
-                    return returnData(false, "操作失败", $like);
-                }
+                DB::beginTransaction();
+                    $like->save();
+                DB::commit();
+                $moment = RMoments::where('moid', $request->moid)->first();
+                System::systemNotice([
+                    'from' => $request->rid, 
+                    'to' => $moment->rid, 
+                    'type' => 1
+                ]);
+                return returnData(true, "操作成功", $like);
             } catch (\Throwable $th) {
+                DB::rollback();
                 return returnData(false, $th);
             }
         }else{

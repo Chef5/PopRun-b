@@ -19,7 +19,7 @@ class RNotices extends Migration
             $table->integer('to', false, false)->comment('接收者');
             $table->tinyInteger('type')->comment('类型:1点赞，2评论，0系统通知');
             $table->tinyInteger('read')->default(0)->comment('是否已读：0未读，1已读');
-            $table->string('msg', 20)->nullable()->comment('消息内容');
+            $table->string('msg', 200)->nullable()->comment('消息内容');
             $table->timestamps();
         });
     }

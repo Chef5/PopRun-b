@@ -241,7 +241,7 @@ class ActivitysController extends Controller
     }
     
     /** 
-     * 获取课程列表
+     * 获取课程详细
      */
     public function getCourseDetail(Request $request){
         if($request->has('rcid')){
