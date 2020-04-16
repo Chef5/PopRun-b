@@ -279,4 +279,51 @@ class RunController extends Controller
             return returnData(false, '缺少ruid');
         }
     }
+
+    /** 
+     * 获取个人运动列表
+     */
+    public function getMyRuns(Request $request){
+        if($request->has('rid')){
+            $request->has('pageindex') ? $pageindex = $request->pageindex+1 : $pageindex = 1;  //当前页 1,2,3,...,首次查询可以传0
+            $request->has('pagesize') ? $pagesize = $request->pagesize : $pagesize = 10;  //页面大小
+            try {
+                // $runs = RRuns::join('images', function($join){
+                //                     $join->on('r_runs.ruid', '=', 'images.key_id')
+                //                          ->where('images.key', '=', 'run');
+                //                 }) //联合图片会导致只能查询到已完成的运动
+                //             ->select('r_runs.*', 'images.original', 'images.thumbnail')
+                //             ->where('r_runs.rid', $request->rid)
+                //             ->orderBy('created_at', 'desc')
+                //             ->skip(($pageindex-1)*$pagesize)
+                //             ->take($pagesize)
+                //             ->get();
+                            
+                $runs = RRuns::where('rid', $request->rid)
+                            ->orderBy('created_at', 'desc')
+                            ->skip(($pageindex-1)*$pagesize)
+                            ->take($pagesize)
+                            ->get();
+                for($n = 0; $n<count($runs); $n++){
+                    //获取图片
+                    $runs[$n]['imgs'] = Images::where('key', 'run')
+                                            ->where('key_id', $runs[$n]['ruid'])
+                                            ->select('original', 'thumbnail')
+                                            ->first();
+                }
+                //返回数据处理
+                $re = [
+                    'rid' => $request->rid,
+                    'pageindex' => $pageindex,
+                    'pagesize' => $pagesize,
+                    'runs' => $runs
+                ];
+                return returnData(true, "操作成功", $re);
+            } catch (\Throwable $th) {
+                return returnData(false, $th);
+            }
+        }else{
+            return returnData(false, "缺少rid", null);
+        }
+    }
 }

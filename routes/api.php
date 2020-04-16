@@ -57,6 +57,8 @@ Route::prefix('run')->group(function () {
     Route::get('/getMonthrank', 'RunController@getMonthrank');
     // 获取某次运动
     Route::get('/getRunById', 'RunController@getRunById');
+    //获取个人运动列表
+    Route::get('/getMyRuns', 'RunController@getMyRuns');
 });
 
 /**
@@ -138,6 +140,8 @@ Route::prefix('user')->group(function () {
     Route::post('/doSettings', 'RUsersController@doSettings')->middleware('filterTime');
     //隐私设置-重置
     Route::post('/resetSettings', 'RUsersController@resetSettings');
+    //获取个人运动列表
+    Route::get('/getMyRuns', 'RunController@getMyRuns');
 });
 
 /**
