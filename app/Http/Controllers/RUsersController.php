@@ -293,6 +293,21 @@ class RUsersController extends Controller
         }
     }
 
+    /** 
+     * 个人主页访问权限
+     */
+    public function getProvicy(Request $request){
+        if($request->has('rid')){
+            try {
+                return returnData(true, '操作成功', RSettings::where('rid', $request->rid)->first());
+            } catch (\Throwable $th) {
+                return returnData(false, $th);
+            }
+        }else{
+            return returnData(false, '缺少rid');
+        }
+    }
+
     // 初始化隐私设置
     private function initProvicySettings($rid){
         if(isset($rid)){

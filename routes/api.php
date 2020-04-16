@@ -142,6 +142,8 @@ Route::prefix('user')->group(function () {
     Route::post('/resetSettings', 'RUsersController@resetSettings');
     //获取个人运动列表
     Route::get('/getMyRuns', 'RunController@getMyRuns');
+    //个人主页访问权限
+    Route::get('/getProvicy', 'RUsersController@getProvicy');
 });
 
 /**
