@@ -326,4 +326,33 @@ class RunController extends Controller
             return returnData(false, "缺少rid", null);
         }
     }
+
+    /** 
+     * 获取个人运动数据统计
+     */
+    public function getMyRunsData(Request $request){
+        if($request->has('rid')){
+            try {
+                $data = RRuns::where('rid', $request->rid)
+                            ->where('distance', '<>', null) //排除未完成运动
+                            ->select(
+                                DB::raw('
+                                    count(*) as times,
+                                    cast(sum(distance) as decimal(15,2)) as sumD,
+                                    cast(max(distance) as decimal(15,2)) as maxD,
+                                    sum(time_run) as sumT, 
+                                    max(time_run) as maxT,
+                                    cast(avg(speed) as decimal(15,2)) as avgS,
+                                    max(speed) as maxS,
+                                    min(speed) as minS
+                                '))
+                            ->get();
+                return returnData(true, "操作成功", $data->toArray());
+            } catch (\Throwable $th) {
+                return returnData(false, $th);
+            }
+        }else{
+            return returnData(false, "缺少rid", null);
+        }
+    }
 }

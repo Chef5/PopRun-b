@@ -59,6 +59,8 @@ Route::prefix('run')->group(function () {
     Route::get('/getRunById', 'RunController@getRunById');
     //获取个人运动列表
     Route::get('/getMyRuns', 'RunController@getMyRuns');
+    //获取个人运动数据统计
+    Route::get('/getMyRunsData', 'RunController@getMyRunsData');
 });
 
 /**
@@ -144,6 +146,8 @@ Route::prefix('user')->group(function () {
     Route::get('/getMyRuns', 'RunController@getMyRuns');
     //个人主页访问权限
     Route::get('/getProvicy', 'RUsersController@getProvicy');
+    //获取个人运动数据统计
+    Route::get('/getMyRunsData', 'RunController@getMyRunsData');
 });
 
 /**
