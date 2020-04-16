@@ -26,8 +26,8 @@ class SystemController extends Controller
         // if($type == 1) $msg = "我觉得您动态很棒！";
         if($from != 0){
             $user = RUsers::where('rid', $from)->first();
-            if($type == 1) $msg = '收到来自 ['.$user->nickname.'] 的点赞！';
-            if($type == 2) $msg = '['.$user->nickname.'] 评论：'.$msg;
+            if($type == 1) $msg = '收到来自['.$user->nickname.']的点赞！';
+            if($type == 2) $msg = '['.$user->nickname.']评论：'.$msg;
         }else{
             $msg = "系统：".$msg;
         }
@@ -46,6 +46,57 @@ class SystemController extends Controller
         } catch (\Throwable $th) {
             DB::rollback();
             return $th;
+        }
+    }
+
+    /** 
+     * 获取系统通知
+     */
+    public function getNotice(Request $request){
+        if($request->has('rid')){
+            if($request->has('type')){
+                if($request->has('read')){
+                    try {
+                        $data = RNotices::where('to', $request->rid)
+                                        ->where('type', $request->type)
+                                        ->where('read', $request->read)
+                                        ->get();
+                        return returnData(true, '操作成功', $data->toArray());
+                    } catch (\Throwable $th) {
+                        return returnData(false, $th);
+                    }
+                }else{
+                    try {
+                        $data = RNotices::where('to', $request->rid)
+                                        ->where('type', $request->type)
+                                        ->get();
+                        return returnData(true, '操作成功', $data->toArray());
+                    } catch (\Throwable $th) {
+                        return returnData(false, $th);
+                    }
+                }
+            }else{
+                if($request->has('read')){
+                    try {
+                        $data = RNotices::where('to', $request->rid)
+                                        ->where('read', $request->read)
+                                        ->get();
+                        return returnData(true, '操作成功', $data->toArray());
+                    } catch (\Throwable $th) {
+                        return returnData(false, $th);
+                    }
+                }else{
+                    try {
+                        $data = RNotices::where('to', $request->rid)
+                                        ->get();
+                        return returnData(true, '操作成功', $data->toArray());
+                    } catch (\Throwable $th) {
+                        return returnData(false, $th);
+                    }
+                }
+            }
+        }else{
+            return returnData(false, '缺少rid');
         }
     }
 }

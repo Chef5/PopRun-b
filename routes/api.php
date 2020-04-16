@@ -34,6 +34,8 @@ Route::prefix('main')->group(function () {
     Route::get('/getHonorAll', 'PublicController@getHonorAll');
     // 获取勋章列表
     Route::get('/getMedalAll', 'PublicController@getMedalAll');
+    // 获取系统通知
+    Route::post('/getNotice', 'SystemController@getNotice');
 });
 
 /**
