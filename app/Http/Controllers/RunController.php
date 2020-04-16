@@ -199,6 +199,7 @@ class RunController extends Controller
             try {
                 $top100 = RRuns::join('r_users', 'r_users.rid', '=', 'r_runs.rid')
                                 ->where('r_users.team', $request->team)
+                                ->where('r_runs.distance', '<>', null) //排除未完成运动
                                 ->whereBetween('r_runs.created_at', [$timeStart, $timeEnd])
                                 ->select(
                                     DB::raw(
@@ -233,6 +234,7 @@ class RunController extends Controller
             try {
                 $top100 = RRuns::join('r_users', 'r_users.rid', '=', 'r_runs.rid')
                                 ->where('r_users.team', $request->team)
+                                ->where('r_runs.distance', '<>', null) //排除未完成运动
                                 ->whereBetween('r_runs.created_at', [$timeStart, $timeEnd])
                                 ->select(
                                     DB::raw(
