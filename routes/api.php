@@ -55,6 +55,8 @@ Route::prefix('run')->group(function () {
     Route::get('/getWeekrank', 'RunController@getWeekrank');
     // 获取月榜
     Route::get('/getMonthrank', 'RunController@getMonthrank');
+    // 获取某次运动
+    Route::get('/getRunById', 'RunController@getRunById');
 });
 
 /**

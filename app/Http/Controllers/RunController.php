@@ -256,4 +256,25 @@ class RunController extends Controller
             return returnData(false, '缺少team校区');
         }
     }
+
+    /**  
+     * 通过id获取某次运动
+     */
+    public function getRunById(Request $request){
+        if($request->has('ruid')){
+            try {
+                $run = RRuns::where('ruid', $request->ruid)->first();
+                //获取图片
+                $run['img'] = Images::where('key', 'run')
+                                    ->where('key_id', $request->ruid)
+                                    ->select('original', 'thumbnail')
+                                    ->first();
+                return returnData(true, '操作成功', $run);
+            } catch (\Throwable $th) {
+                return returnData(false, $th);
+            }
+        }else{
+            return returnData(false, '缺少ruid');
+        }
+    }
 }
