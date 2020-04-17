@@ -187,11 +187,13 @@ class MomentsController extends Controller
                     $data[$n]['comments'] = Comments::join('r_users', 'r_users.rid', '=', 'comments.rid')
                                                     ->where('moid', $moments[$i]['moid'])
                                                     ->select('comments.*', 'r_users.nickname')
+                                                    ->orderBy('created_at', 'asc')
                                                     ->get();
                     //获取点赞
                     $data[$n]['likes'] = LinkULikeMs::join('r_users', 'r_users.rid', '=', 'link_u_like_ms.rid')
                                                     ->where('moid', $moments[$i]['moid'])
                                                     ->select('link_u_like_ms.*', 'r_users.img')
+                                                    ->orderBy('created_at', 'asc')
                                                     ->get();
                     //获取图片
                     $imgs = Images::where('key', 'moment')->where('key_id', $moments[$i]['moid'])->get();
@@ -248,11 +250,13 @@ class MomentsController extends Controller
                 $data[$n]['comments'] = Comments::join('r_users', 'r_users.rid', '=', 'comments.rid')
                                                 ->where('moid', $moments[$n]['moid'])
                                                 ->select('comments.*', 'r_users.nickname')
+                                                ->orderBy('created_at', 'asc')
                                                 ->get();
                 //获取点赞
                 $data[$n]['likes'] = LinkULikeMs::join('r_users', 'r_users.rid', '=', 'link_u_like_ms.rid')
                                                 ->where('moid', $moments[$n]['moid'])
                                                 ->select('link_u_like_ms.*', 'r_users.img')
+                                                ->orderBy('created_at', 'asc')
                                                 ->get();
                 //获取图片
                 $imgs = Images::where('key', 'moment')->where('key_id', $moments[$n]['moid'])->get();
@@ -297,11 +301,13 @@ class MomentsController extends Controller
                 $data['comments'] = Comments::join('r_users', 'r_users.rid', '=', 'comments.rid')
                                                 ->where('moid', $request->moid)
                                                 ->select('comments.*', 'r_users.nickname')
+                                                ->orderBy('created_at', 'asc')
                                                 ->get();
                 //获取点赞
                 $data['likes'] = LinkULikeMs::join('r_users', 'r_users.rid', '=', 'link_u_like_ms.rid')
                                                 ->where('moid', $request->moid)
                                                 ->select('link_u_like_ms.*', 'r_users.img')
+                                                ->orderBy('created_at', 'asc')
                                                 ->get();
                 //获取图片
                 $imgs = Images::where('key', 'moment')->where('key_id', $request->moid)->get();
