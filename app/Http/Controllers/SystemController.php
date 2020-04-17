@@ -99,4 +99,26 @@ class SystemController extends Controller
             return returnData(false, '缺少rid');
         }
     }
+
+    /**  
+     * 阅读通知
+     */
+    public function readNotice(Request $request){
+        if($request->has('noids')){
+            $noids = $request->noids;
+            try {
+                DB::beginTransaction();
+                    RNotices::whereIn('noid', $noids)
+                            ->update(['read' => 1]);
+                    $data = RNotices::whereIn('noid', $noids)->get();
+                DB::commit();
+                return returnData(true, '操作成功', $data->toArray());
+            } catch (\Throwable $th) {
+                DB::rollBack();
+                return returnData(false, $th);
+            }
+        }else{
+            return returnData(false, '缺少noid');
+        }
+    }
 }

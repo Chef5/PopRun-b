@@ -36,6 +36,8 @@ Route::prefix('main')->group(function () {
     Route::get('/getMedalAll', 'PublicController@getMedalAll');
     // 获取系统通知
     Route::post('/getNotice', 'SystemController@getNotice');
+    // 阅读通知
+    Route::post('/readNotice', 'SystemController@readNotice');
 });
 
 /**
