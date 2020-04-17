@@ -347,7 +347,7 @@ class RunController extends Controller
                                     min(speed) as minS
                                 '))
                             ->get();
-                return returnData(true, "操作成功", $data->toArray());
+                return returnData(true, "操作成功", $data[0]);
             } catch (\Throwable $th) {
                 return returnData(false, $th);
             }
