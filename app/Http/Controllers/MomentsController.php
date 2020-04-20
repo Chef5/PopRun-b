@@ -186,7 +186,7 @@ class MomentsController extends Controller
                     //获取评论
                     $data[$n]['comments'] = Comments::join('r_users', 'r_users.rid', '=', 'comments.rid')
                                                     ->where('moid', $moments[$i]['moid'])
-                                                    ->select('comments.*', 'r_users.nickname')
+                                                    ->select('comments.*', 'r_users.nickname', 'r_users.img')
                                                     ->orderBy('created_at', 'asc')
                                                     ->get();
                     //获取点赞
@@ -300,7 +300,7 @@ class MomentsController extends Controller
                 //获取评论
                 $data['comments'] = Comments::join('r_users', 'r_users.rid', '=', 'comments.rid')
                                                 ->where('moid', $request->moid)
-                                                ->select('comments.*', 'r_users.nickname')
+                                                ->select('comments.*', 'r_users.nickname', 'r_users.img')
                                                 ->orderBy('created_at', 'asc')
                                                 ->get();
                 //获取点赞
