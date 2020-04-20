@@ -298,6 +298,55 @@ class RunController extends Controller
             return returnData(false, '缺少team校区');
         }
     }
+    
+    /** 
+     * 获取个人排行榜信息：周榜，月榜合并接口 type:0周榜 1月榜
+     */
+    public function getMyRanking(Request $request){
+        if($request->has('rid')){
+            //默认月榜
+            $timeStart = date("Y-m-01")." 00:00:00";
+            $timeEnd = date('Y-m-d', strtotime("$timeStart +1 month -1 day"))." 23:59:59";
+            if($request->has('type') && $request->type == 0){  //0周榜
+                $timeStart = date('Y-m-d', strtotime("this week"))." 00:00:00";
+                $timeEnd = date('Y-m-d', strtotime("+1 week -1 day", strtotime("this week")))." 23:59:59";
+            }
+            try {
+                $user = RUsers::where('rid', $request->rid)->first();
+                $result = RRuns::join('r_users', 'r_users.rid', '=', 'r_runs.rid')
+                                ->where('r_users.team', $user->team)
+                                ->where('r_runs.distance', '<>', null) //排除未完成运动
+                                ->whereBetween('r_runs.created_at', [$timeStart, $timeEnd])
+                                ->select(
+                                    DB::raw(
+                                        'r_users.rid, 
+                                        r_users.nickname, 
+                                        r_users.img, 
+                                        r_users.team, 
+                                        cast(sum(r_runs.distance) as decimal(15,2)) as sumD,
+                                        sum(r_runs.time_run) as sumT, 
+                                        cast(avg(r_runs.speed) as decimal(15,2)) as avgS'
+                                        // rank() over(order by sumD) rank'
+                                        ))
+                                ->groupBy('r_runs.rid')
+                                ->orderBy('sumD', 'desc')
+                                ->get();
+                $re = null;
+                for($n=0; $n<count($result); $n++){
+                    if($result[$n]['rid'] == $user['rid']){
+                        $re = $result[$n];
+                        $re['rank'] = $n+1;
+                        break;
+                    }
+                }
+                return returnData(true, "操作成功", $re);
+            } catch (\Throwable $th) {
+                return returnData(false, $th);
+            }
+        }else{
+            return returnData(false, '缺少rid');
+        }
+    }
 
     /**  
      * 通过id获取某次运动
