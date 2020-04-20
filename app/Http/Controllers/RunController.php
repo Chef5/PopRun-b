@@ -259,6 +259,46 @@ class RunController extends Controller
         }
     }
 
+    /** 
+     * 获取排行榜：周榜，月榜合并接口 type:0周榜 1月榜
+     */
+    public function getRanking(Request $request){
+        if($request->has('team')){
+            //默认月榜
+            $timeStart = date("Y-m-01")." 00:00:00";
+            $timeEnd = date('Y-m-d', strtotime("$timeStart +1 month -1 day"))." 23:59:59";
+            if($request->has('type') && $request->type == 0){  //0周榜
+                $timeStart = date('Y-m-d', strtotime("this week"))." 00:00:00";
+                $timeEnd = date('Y-m-d', strtotime("+1 week -1 day", strtotime("this week")))." 23:59:59";
+            }
+            try {
+                $top100 = RRuns::join('r_users', 'r_users.rid', '=', 'r_runs.rid')
+                                ->where('r_users.team', $request->team)
+                                ->where('r_runs.distance', '<>', null) //排除未完成运动
+                                ->whereBetween('r_runs.created_at', [$timeStart, $timeEnd])
+                                ->select(
+                                    DB::raw(
+                                        'r_users.rid, 
+                                        r_users.nickname, 
+                                        r_users.img, 
+                                        r_users.team, 
+                                        cast(sum(r_runs.distance) as decimal(15,2)) as sumD,
+                                        sum(r_runs.time_run) as sumT, 
+                                        cast(avg(r_runs.speed) as decimal(15,2)) as avgS'
+                                        ))
+                                ->groupBy('r_runs.rid')
+                                ->orderBy('sumD', 'desc')
+                                ->limit(100)
+                                ->get();
+                return returnData(true, "操作成功", $top100->toArray());
+            } catch (\Throwable $th) {
+                return returnData(false, $th);
+            }
+        }else{
+            return returnData(false, '缺少team校区');
+        }
+    }
+
     /**  
      * 通过id获取某次运动
      */
