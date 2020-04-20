@@ -170,14 +170,20 @@ class MomentsController extends Controller
         }
     }
 
-    // 获取个人动态
+    // 获取个人动态  手动分页:)
     public function getMine(Request $request){
         if($request->has('rid')){
             $request->has('pageindex') ? $pageindex = $request->pageindex+1 : $pageindex = 1;  //当前页 1,2,3,...,首次查询可以传0
             $request->has('pagesize') ? $pagesize = $request->pagesize : $pagesize = 10;  //页面大小
             $pageall = null; //总页数
             try {
-                $moments = RMoments::where('rid', $request->rid)->get();
+                $moments = RMoments::join('r_users', 'r_users.rid', '=', 'r_moments.rid')
+                                ->select('r_moments.*', 'r_users.nickname', 'r_users.img')
+                                ->where('r_moments.rid', $request->rid)
+                                ->orderBy('created_at', 'desc')
+                                // ->skip(($pageindex-1)*$pagesize)
+                                // ->take($pagesize)
+                                ->get();
                 $moment_num = count($moments); //动态总条数
                 $pageall = ceil($moment_num/$pagesize); //计算总页数
                 $data = []; //动态联合数据
@@ -294,13 +300,16 @@ class MomentsController extends Controller
     public function getMomentById(Request $request){
         if($request->has('moid')){
             try {
-                $moment = RMoments::where('moid', $request->moid)->first();
+                $moment = RMoments::join('r_users', 'r_users.rid', '=', 'r_moments.rid')
+                                ->select('r_moments.*', 'r_users.nickname', 'r_users.img')
+                                ->where('moid', $request->moid)
+                                ->first();
                 $data = []; //动态联合数据
                 $data= $moment;
                 //获取评论
                 $data['comments'] = Comments::join('r_users', 'r_users.rid', '=', 'comments.rid')
                                                 ->where('moid', $request->moid)
-                                                ->select('comments.*', 'r_users.nickname', 'r_users.img')
+                                                ->select('comments.*', 'r_users.nickname')
                                                 ->orderBy('created_at', 'asc')
                                                 ->get();
                 //获取点赞
