@@ -121,4 +121,25 @@ class SystemController extends Controller
             return returnData(false, '缺少noid');
         }
     }
+    
+    /**  
+     * 删除通知
+     */
+    public function delNotice(Request $request){
+        if($request->has('noids')){
+            $noids = $request->noids;
+            try {
+                DB::beginTransaction();
+                    RNotices::whereIn('noid', $noids)
+                            ->delete();
+                DB::commit();
+                return returnData(true, '操作成功');
+            } catch (\Throwable $th) {
+                DB::rollBack();
+                return returnData(false, $th);
+            }
+        }else{
+            return returnData(false, '缺少noid');
+        }
+    }
 }

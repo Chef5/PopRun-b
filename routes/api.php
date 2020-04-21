@@ -38,6 +38,8 @@ Route::prefix('main')->group(function () {
     Route::post('/getNotice', 'SystemController@getNotice');
     // 阅读通知
     Route::post('/readNotice', 'SystemController@readNotice');
+    // 删除通知
+    Route::post('/delNotice', 'SystemController@delNotice');
 });
 
 /**
