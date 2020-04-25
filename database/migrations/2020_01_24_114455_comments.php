@@ -14,11 +14,15 @@ class Comments extends Migration
     public function up()
     {
         Schema::create('comments', function (Blueprint $table) {
-            $table->bigIncrements('coid');
-            $table->integer('rid')->foreign('rid')->references('rid')->on('r_users');
-            $table->bigInteger('moid')->foreign('moid')->references('moid')->on('r_moments');
+            $table->increments('coid');
+            $table->integer('rid')->unsigned();
+            $table->integer('moid')->unsigned();
             $table->string('comment', 200)->comment('评论');
             $table->timestamps();
+            
+            //外键设置得先定义字段，再设置
+            $table->foreign('rid')->references('rid')->on('r_users');
+            $table->foreign('moid')->references('moid')->on('r_moments');
         });
     }
 

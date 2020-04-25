@@ -14,9 +14,13 @@ class LinkUHs extends Migration
     public function up()
     {
         Schema::create('link_u_hs', function (Blueprint $table) {
-            $table->integer('rid')->foreign('rid')->references('rid')->on('r_users');
-            $table->integer('hoid')->foreign('hoid')->references('hoid')->on('r_honors');
+            $table->integer('rid')->unsigned();
+            $table->integer('hoid')->unsigned();
             $table->timestamps();
+            
+            //外键设置得先定义字段，再设置
+            $table->foreign('rid')->references('rid')->on('r_users');
+            $table->foreign('hoid')->references('hoid')->on('r_honors');
         });
     }
 

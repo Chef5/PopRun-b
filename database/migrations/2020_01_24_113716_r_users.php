@@ -14,12 +14,12 @@ class RUsers extends Migration
     public function up()
     {
         Schema::create('r_users', function (Blueprint $table) {
-            $table->increments('rid', 10);
+            $table->increments('rid');
             $table->string('openid', 50)->unique();
-            $table->string('nickname', 20)->nullable()->comment('昵称');
+            $table->string('nickname', 20)->comment('昵称：微信昵称最长16');
             $table->string('team', 50)->nullable()->comment('校区');
-            $table->tinyInteger('sex')->nullable()->comment('性别');
-            $table->string('img', 200)->nullable()->comment('头像');
+            $table->tinyInteger('sex')->comment('性别');
+            $table->string('img', 200)->comment('头像');
             $table->string('info', 200)->nullable()->comment('签名');
             $table->string('job', 50)->nullable()->comment('职业');
             $table->timestamps();

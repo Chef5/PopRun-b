@@ -15,8 +15,8 @@ class RHonors extends Migration
     {
         Schema::create('r_honors', function (Blueprint $table) {
             $table->increments('hoid', 4);
-            $table->string('desc', 100)->nullable()->unique()->comment('称号描述');
-            $table->string('name', 20)->nullable()->unique()->comment('称号名称');
+            $table->string('desc', 4)->unique()->comment('称号描述');
+            $table->string('name', 10)->unique()->comment('称号名称');
             $table->timestamps();
         });
     }

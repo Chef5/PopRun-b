@@ -14,9 +14,13 @@ class LinkULikeMs extends Migration
     public function up()
     {
         Schema::create('link_u_like_ms', function (Blueprint $table) {
-            $table->bigInteger('moid')->foreign('moid')->references('moid')->on('r_moments');
-            $table->integer('rid')->foreign('rid')->references('rid')->on('r_users');
+            $table->integer('moid')->unsigned();
+            $table->integer('rid')->unsigned();
             $table->timestamps();
+            
+            //外键设置得先定义字段，再设置
+            $table->foreign('moid')->references('moid')->on('r_moments');
+            $table->foreign('rid')->references('rid')->on('r_users');
         });
     }
 
