@@ -94,14 +94,6 @@ class RunController extends Controller
                 try {
                     DB::beginTransaction();
                         $run = RRuns::where('ruid', $request->ruid)->update($request->all());
-                        if($request->has('img')){
-                            $image = new Images();
-                            $img = $request->img;
-                            $img['key'] = 'run';
-                            $img['key_id'] = $request->ruid;
-                            $image->fill($img);
-                            $image->save();
-                        }
                     DB::commit();
                     return returnData(true, '操作成功', RRuns::where('ruid', $request->ruid)->first());
                 } catch (\Throwable $th) {
@@ -118,14 +110,6 @@ class RunController extends Controller
                     // 跑步初始数据
                     $run->fill($request->all());
                     $run->save();
-                    if($request->has('img')){
-                        $image = new Images();
-                        $img = $request->img;
-                        $img['key'] = 'run';
-                        $img['key_id'] = $run->id;
-                        $image->fill($img);
-                        $image->save();
-                    }
                 DB::commit();
                 // 处理返回数据
                 $data = RRuns::where('ruid', $run->id)->first();
@@ -143,35 +127,32 @@ class RunController extends Controller
      * 分享到动态圈子
      */
     public function doShare(Request $request){
-        if($request->has('ruid') && $request->has('rid')){
+        if($request->has('ruid') && $request->has('rid') && $request->has('img')){
             $run = RRuns::where('ruid', $request->ruid)->where('rid', $request->rid)->first();
-            $shareImg = Images::where('key', 'run')->where('key_id', $request->ruid)->first();
             if($run && $run->isshared==0){
                 if($shareImg || $request->has('text')){ //图片和文字，必须有一个
                     try {
                         DB::beginTransaction();
-                        //更新运动分享标志
-                        DB::table('r_runs')
-                            ->where('ruid', $request->ruid)
-                            ->update(['isshared' => 1]);
-                        //新建动态：type=1 打卡分享类型
-                        $moment = new RMoments();
-                        $moment->fillable(['rid', 'text', 'type']);
-                        $moment->fill([
-                            'rid' => $run->rid,
-                            'text' => $request->has('text') ? $request->text : "",
-                            'type' => 1   //打卡分享1
-                        ]);
-                        $moment->save();
-                        //将运动图复制到动态
-                        if($shareImg){
-                            $shareImg = $shareImg->toArray();
-                            $shareImg['key'] = 'moment';
-                            $shareImg['key_id'] = $moment->id;
+                            //更新运动分享标志
+                            DB::table('r_runs')
+                                ->where('ruid', $request->ruid)
+                                ->update(['isshared' => 1]);
+                            //新建动态：type=1 打卡分享类型
+                            $moment = new RMoments();
+                            $moment->fillable(['rid', 'text', 'type']);
+                            $moment->fill([
+                                'rid' => $run->rid,
+                                'text' => $request->has('text') ? $request->text : null,
+                                'type' => 1   //打卡分享1
+                            ]);
+                            $moment->save();
+                            //保存分享图
                             $image = new Images();
-                            $image->fill($shareImg);
+                            $img = $request->img;
+                            $img['key'] = 'moment';
+                            $img['key_id'] = $moment->id;
+                            $image->fill($img);
                             $image->save();
-                        }
                         DB::commit();
                         return returnData(true, '操作成功');
                     } catch (\Throwable $th) {
@@ -185,7 +166,7 @@ class RunController extends Controller
                 return returnData(false, '您已经分享过了', '或者ruid和rid不匹配');
             }
         }else{
-            return returnData(false, '缺少ruid或者rid');
+            return returnData(false, '缺少ruid或者rid，或者分享图');
         }
     }
 
