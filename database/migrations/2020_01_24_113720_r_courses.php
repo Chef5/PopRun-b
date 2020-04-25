@@ -14,7 +14,7 @@ class RCourses extends Migration
     public function up()
     {
         Schema::create('r_courses', function (Blueprint $table) {
-            $table->increments('rcid');
+            $table->increments('rcid')->unsigned();
             $table->string('title', 30)->comment('教程标题');
             $table->longText('text')->comment('教程内容');
             $table->timestamps();

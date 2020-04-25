@@ -14,11 +14,11 @@ class RNotices extends Migration
     public function up()
     {
         Schema::create('r_notices', function (Blueprint $table) {
-            $table->increments('noid');
+            $table->increments('noid')->unsigned();
             $table->integer('from')->unsigned()->comment('发出者:系统用户rid=0');
             $table->integer('to')->unsigned()->on('r_users')->comment('接收者');
-            $table->tinyInteger('type')->comment('类型:1点赞，2评论，0系统通知');
-            $table->tinyInteger('read')->default(0)->comment('是否已读：0未读，1已读');
+            $table->tinyInteger('type')->unsigned()->comment('类型:1点赞，2评论，0系统通知');
+            $table->tinyInteger('read')->unsigned()->default(0)->comment('是否已读：0未读，1已读');
             $table->string('msg', 200)->comment('消息内容');
             $table->timestamps();
             

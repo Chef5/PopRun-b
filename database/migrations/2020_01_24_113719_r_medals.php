@@ -14,9 +14,9 @@ class RMedals extends Migration
     public function up()
     {
         Schema::create('r_medals', function (Blueprint $table) {
-            $table->increments('meid', 4);
+            $table->increments('meid', 4)->unsigned();
             $table->string('mkey', 10)->unique()->comment('检索串');
-            $table->tinyInteger('type')->default(0)->comment('类型：1可重复获得，0不可重复');
+            $table->tinyInteger('type')->unsigned()->default(0)->comment('类型：1可重复获得，0不可重复');
             $table->string('desc', 100)->comment('勋章简介');
             $table->string('name', 20)->unique()->comment('勋章名称');
             $table->string('img', 200)->unique()->comment('勋章图标');

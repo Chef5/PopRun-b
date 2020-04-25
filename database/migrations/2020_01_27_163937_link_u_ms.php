@@ -14,7 +14,7 @@ class LinkUMs extends Migration
     public function up()
     {
         Schema::create('link_u_ms', function (Blueprint $table) {
-            $table->increments('linkid');
+            $table->increments('linkid')->unsigned();
             $table->integer('rid')->unsigned();
             $table->integer('meid')->unsigned();
             $table->timestamps();

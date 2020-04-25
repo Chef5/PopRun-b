@@ -15,9 +15,9 @@ class RSettings extends Migration
     {
         Schema::create('r_settings', function (Blueprint $table) {
             $table->integer('rid')->unsigned();
-            $table->tinyInteger('job')->default(1)->comment('类型：0不可见，1可见');
-            $table->tinyInteger('team')->default(1)->comment('类型：0不可见，1可见');
-            $table->tinyInteger('run')->default(1)->comment('类型：0不可见，1可见');
+            $table->tinyInteger('job')->unsigned()->default(1)->comment('类型：0不可见，1可见');
+            $table->tinyInteger('team')->unsigned()->default(1)->comment('类型：0不可见，1可见');
+            $table->tinyInteger('run')->unsigned()->default(1)->comment('类型：0不可见，1可见');
             $table->timestamps();
             
             //外键设置得先定义字段，再设置

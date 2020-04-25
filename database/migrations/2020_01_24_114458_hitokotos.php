@@ -14,7 +14,7 @@ class Hitokotos extends Migration
     public function up()
     {
         Schema::create('hitokotos', function (Blueprint $table) {
-            $table->increments('hiid');
+            $table->increments('hiid')->unsigned();
             $table->string('hitokoto', 200)->comment('一言');
             $table->string('type', 1)->comment('类型');
             $table->string('from', 50)->nullable()->comment('来源');

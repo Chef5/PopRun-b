@@ -14,7 +14,7 @@ class RActivitys extends Migration
     public function up()
     {
         Schema::create('r_activitys', function (Blueprint $table) {
-            $table->increments('acid');
+            $table->increments('acid')->unsigned();
             $table->integer('meid')->unsigned()->comment('勋章id');
             $table->integer('cover')->unsigned()->comment('封面图id');
             $table->string('title', 30)->comment('标题');

@@ -14,21 +14,21 @@ class Images extends Migration
     public function up()
     {
         Schema::create('images', function (Blueprint $table) {
-            $table->increments('id');
+            $table->increments('id')->unsigned();
             $table->string('key', 10)->comment('索引串：moment,activity,activity-c,course');
-            $table->integer('key_id')->comment('对应表id');
+            $table->integer('key_id')->unsigned()->comment('对应表id');
             $table->string('name', 200)->comment('源名称');
             $table->string('store', 50)->comment('存储名称');
             $table->string('extension', 10)->comment('后缀');
             $table->string('mimetype', 20)->comment('图片格式');
-            $table->integer('size')->comment('源大小');
-            $table->integer('width')->comment('宽');
-            $table->integer('height')->comment('高');
-            $table->integer('mwidth')->default(200)->comment('压缩宽');
-            $table->integer('mheight')->comment('压缩高');
+            $table->integer('size')->unsigned()->comment('源大小');
+            $table->smallInteger('width')->unsigned()->comment('宽');
+            $table->smallInteger('height')->unsigned()->comment('高');
+            $table->smallInteger('mwidth')->unsigned()->default(200)->comment('压缩宽');
+            $table->smallInteger('mheight')->unsigned()->comment('压缩高');
             $table->string('original', 200)->comment('原图url');
             $table->string('thumbnail', 200)->comment('压缩图rul');
-            $table->string('error', 50)->nullable()->comment('压缩错误码');
+            $table->string('error', 50)->nullable()->comment('压缩错误信息');
             $table->timestamps();
         });
     }

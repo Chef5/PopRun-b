@@ -14,7 +14,7 @@ class Comments extends Migration
     public function up()
     {
         Schema::create('comments', function (Blueprint $table) {
-            $table->increments('coid');
+            $table->increments('coid')->unsigned();
             $table->integer('rid')->unsigned();
             $table->integer('moid')->unsigned();
             $table->string('comment', 200)->comment('评论');

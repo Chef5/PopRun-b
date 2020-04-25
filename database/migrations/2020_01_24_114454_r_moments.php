@@ -14,13 +14,13 @@ class RMoments extends Migration
     public function up()
     {
         Schema::create('r_moments', function (Blueprint $table) {
-            $table->increments('moid');
+            $table->increments('moid')->unsigned();
             $table->integer('rid')->unsigned();
             $table->text('text')->nullable()->comment('动态内容:图片动态时为空');
             $table->string('location', 50)->nullable()->comment('位置');
-            $table->decimal('latitude', 18, 15)->nullable()->comment('位置维度');
-            $table->decimal('longitude', 18, 15)->nullable()->comment('位置经度');
-            $table->tinyInteger('type')->default(0)->comment('类型：0普通动态，1打卡分享');
+            $table->decimal('latitude', 19, 15)->nullable()->comment('位置维度');
+            $table->decimal('longitude', 19, 15)->nullable()->comment('位置经度');
+            $table->tinyInteger('type')->unsigned()->default(0)->comment('类型：0普通动态，1打卡分享');
             $table->timestamps();
             
             //外键设置得先定义字段，再设置
