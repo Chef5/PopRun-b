@@ -433,7 +433,10 @@ class RunController extends Controller
         if($request->has('rid') && $request->has('ruid')){
             try {
                 DB::beginTransaction(); //事务开始
-                    RMoments::where('ruid', $request->ruid)->where('rid', $request->rid)->delete();
+                    RRuns::where([
+                        ['ruid', '=', $request->ruid],
+                        ['rid', '=', $request->rid]
+                    ])->delete();
                 DB::commit(); //提交事务
                 return returnData(true, "操作成功", null);
             } catch (\Throwable $th) {
