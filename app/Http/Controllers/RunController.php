@@ -425,4 +425,23 @@ class RunController extends Controller
             return returnData(false, "缺少rid", null);
         }
     }
+
+    /**
+     * 删除记录
+     */
+    public function delRun(Request $request){
+        if($request->has('rid') && $request->has('ruid')){
+            try {
+                DB::beginTransaction(); //事务开始
+                    RMoments::where('ruid', $request->ruid)->where('rid', $request->rid)->delete();
+                DB::commit(); //提交事务
+                return returnData(true, "操作成功", null);
+            } catch (\Throwable $th) {
+                DB::rollback(); //回滚
+                return returnData(false, $th);
+            }
+        }else{
+            return returnData(false, "缺rid或者ruid", null);
+        }
+    }
 }

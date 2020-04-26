@@ -67,10 +67,12 @@ Route::prefix('run')->group(function () {
     Route::get('/getMyRanking', 'RunController@getMyRanking');
     // 获取某次运动
     Route::get('/getRunById', 'RunController@getRunById');
-    //获取个人运动列表
+    // 获取个人运动列表
     Route::get('/getMyRuns', 'RunController@getMyRuns');
-    //获取个人运动数据统计
+    // 获取个人运动数据统计
     Route::get('/getMyRunsData', 'RunController@getMyRunsData');
+    // 删除某次运动
+    Route::post('/delRun', 'RunController@delRun');
 });
 
 /**
