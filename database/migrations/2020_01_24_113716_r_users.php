@@ -21,7 +21,7 @@ class RUsers extends Migration
             $table->tinyInteger('sex')->unsigned()->comment('性别');
             $table->string('img', 200)->comment('头像');
             $table->string('info', 200)->nullable()->comment('签名');
-            $table->string('job', 50)->nullable()->comment('职业');
+            $table->string('job', 20)->nullable()->comment('职业');
             $table->timestamps();
             // $table->primary(['rid']);
         });

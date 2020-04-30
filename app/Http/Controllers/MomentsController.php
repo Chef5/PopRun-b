@@ -25,7 +25,10 @@ class MomentsController extends Controller
                     $moment->fillable(['rid', 'text']);
                     $moment->fill([
                         'rid' => $request->rid,
-                        'text' => $request->has('text') ? $request->text : ""
+                        'text' => $request->has('text') ? $request->text : null,
+                        'location' => $request->has('location') ? $request->location : null,
+                        'latitude' => $request->has('latitude') ? $request->latitude : null,
+                        'longitude' => $request->has('longitude') ? $request->longitude : null
                     ]);
                     try {
                         DB::beginTransaction();
