@@ -22,11 +22,10 @@ class MomentsController extends Controller
                 $user = RUsers::where('rid', $request->rid);
                 if($user->first()){
                     $moment = new RMoments();
-                    $moment->fillable(['rid', 'text']);
                     $moment->fill([
                         'rid' => $request->rid,
                         'text' => $request->has('text') ? $request->text : null,
-                        'location' => $request->has('location') ? $request->location : null,
+                        'location' => "avvv",
                         'latitude' => $request->has('latitude') ? $request->latitude : null,
                         'longitude' => $request->has('longitude') ? $request->longitude : null
                     ]);
