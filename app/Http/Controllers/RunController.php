@@ -130,37 +130,33 @@ class RunController extends Controller
         if($request->has('ruid') && $request->has('rid') && $request->has('img')){
             $run = RRuns::where('ruid', $request->ruid)->where('rid', $request->rid)->first();
             if($run && $run->isshared==0){
-                if($shareImg || $request->has('text')){ //图片和文字，必须有一个
-                    try {
-                        DB::beginTransaction();
-                            //更新运动分享标志
-                            DB::table('r_runs')
-                                ->where('ruid', $request->ruid)
-                                ->update(['isshared' => 1]);
-                            //新建动态：type=1 打卡分享类型
-                            $moment = new RMoments();
-                            $moment->fillable(['rid', 'text', 'type']);
-                            $moment->fill([
-                                'rid' => $run->rid,
-                                'text' => $request->has('text') ? $request->text : null,
-                                'type' => 1   //打卡分享1
-                            ]);
-                            $moment->save();
-                            //保存分享图
-                            $image = new Images();
-                            $img = $request->img;
-                            $img['key'] = 'moment';
-                            $img['key_id'] = $moment->id;
-                            $image->fill($img);
-                            $image->save();
-                        DB::commit();
-                        return returnData(true, '操作成功');
-                    } catch (\Throwable $th) {
-                        DB::rollBack();
-                        return returnData(false, $th);
-                    }
-                }else{
-                    return returnData(false, '图片和文字，必须有一个');
+                try {
+                    DB::beginTransaction();
+                        //更新运动分享标志
+                        DB::table('r_runs')
+                            ->where('ruid', $request->ruid)
+                            ->update(['isshared' => 1]);
+                        //新建动态：type=1 打卡分享类型
+                        $moment = new RMoments();
+                        $moment->fillable(['rid', 'text', 'type']);
+                        $moment->fill([
+                            'rid' => $run->rid,
+                            'text' => $request->has('text') ? $request->text : null,
+                            'type' => 1   //打卡分享1
+                        ]);
+                        $moment->save();
+                        //保存分享图
+                        $image = new Images();
+                        $img = $request->img;
+                        $img['key'] = 'moment';
+                        $img['key_id'] = $moment->id;
+                        $image->fill($img);
+                        $image->save();
+                    DB::commit();
+                    return returnData(true, '操作成功');
+                } catch (\Throwable $th) {
+                    DB::rollBack();
+                    return returnData(false, $th);
                 }
             }else{
                 return returnData(false, '您已经分享过了', '或者ruid和rid不匹配');
