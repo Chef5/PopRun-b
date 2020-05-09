@@ -29,7 +29,9 @@ class Kernel extends ConsoleKernel
         //获取月勋章
         $schedule->command('command:GrantMonthMedal')->monthlyOn(1, '00:30');
         //获取季勋章
-        $schedule->command('command:GrantSeasonMedal')->cron('30 00 01 */3 *');
+        $schedule->command('command:GrantSeasonMedal')->cron('35 00 01 */3 *');
+        //获取月排行榜勋章
+        $schedule->command('command:GrantRankingMedal')->monthlyOn(1, '00:40');
     }
 
     /**

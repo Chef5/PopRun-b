@@ -29,7 +29,7 @@ class SystemController extends Controller
             if($type == 1) $msg = '收到来自['.$user->nickname.']的点赞！';
             if($type == 2) $msg = '['.$user->nickname.']评论：'.$msg;
         }else{
-            $msg = "系统：".$msg;
+            // $msg = "系统：".$msg;
         }
 
         //开始保存
