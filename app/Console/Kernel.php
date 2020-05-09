@@ -19,13 +19,17 @@ class Kernel extends ConsoleKernel
 
     /**
      * Define the application's command schedule.
+     * 分 时 天 月 星期
      *
      * @param  \Illuminate\Console\Scheduling\Schedule  $schedule
      * @return void
      */
     protected function schedule(Schedule $schedule)
     {
-        $schedule->command('GrantMonthMedal')->monthlyOn(1, '00:30');
+        //获取月勋章
+        $schedule->command('command:GrantMonthMedal')->monthlyOn(1, '00:30');
+        //获取季勋章
+        $schedule->command('command:GrantSeasonMedal')->cron('30 00 01 */3 *');
     }
 
     /**

@@ -80,6 +80,7 @@ cp ../.env ./
 composer install  #first time
 php artisan key:generate  #first time
 php artisan migrate  #first time
+php artisan schedule:run
 php artisan up
 
 chown -R www-data:www-data /home/dev.run/PopRun-b

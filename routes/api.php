@@ -186,4 +186,6 @@ Route::prefix('test')->group(function () {
     });
     // 月勋章授予
     Route::get('/grantMonthMedal', 'testController@grantMonthMedal');
+    // 季勋章授予
+    Route::get('/grantSeasonMedal', 'testController@grantSeasonMedal');
 });
