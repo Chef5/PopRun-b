@@ -176,3 +176,14 @@ Route::prefix('admin')->group(function () {
     // 数据库调整，图片过渡
     Route::post('/transferImg', 'AdminController@transferImg');
 });
+
+/**
+ * 定时任务测试
+ */
+Route::prefix('test')->group(function () {
+    Route::get('/', function(){
+        return "测试接口暂未开发完成";
+    });
+    // 月勋章授予
+    Route::get('/grantMonthMedal', 'testController@grantMonthMedal');
+});

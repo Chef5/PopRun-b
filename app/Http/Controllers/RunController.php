@@ -333,10 +333,10 @@ class RunController extends Controller
             try {
                 $run = RRuns::where('ruid', $request->ruid)->first();
                 //获取图片
-                $run['img'] = Images::where('key', 'run')
-                                    ->where('key_id', $request->ruid)
-                                    ->select('original', 'thumbnail')
-                                    ->first();
+                // $run['img'] = Images::where('key', 'run')
+                //                     ->where('key_id', $request->ruid)
+                //                     ->select('original', 'thumbnail')
+                //                     ->first();
                 return returnData(true, '操作成功', $run);
             } catch (\Throwable $th) {
                 return returnData(false, $th);
@@ -370,13 +370,13 @@ class RunController extends Controller
                             ->skip(($pageindex-1)*$pagesize)
                             ->take($pagesize)
                             ->get();
-                for($n = 0; $n<count($runs); $n++){
-                    //获取图片
-                    $runs[$n]['imgs'] = Images::where('key', 'run')
-                                            ->where('key_id', $runs[$n]['ruid'])
-                                            ->select('original', 'thumbnail')
-                                            ->first();
-                }
+                // for($n = 0; $n<count($runs); $n++){
+                //     //获取图片
+                //     $runs[$n]['imgs'] = Images::where('key', 'run')
+                //                             ->where('key_id', $runs[$n]['ruid'])
+                //                             ->select('original', 'thumbnail')
+                //                             ->first();
+                // }
                 //返回数据处理
                 $re = [
                     'rid' => $request->rid,
