@@ -15,6 +15,8 @@ class Kernel extends ConsoleKernel
     protected $commands = [
         //引入
         \App\Console\Commands\GrantMonthMedal::class,
+        \App\Console\Commands\GrantSeasonMedal::class,
+        \App\Console\Commands\GrantRankingMedal::class,
     ];
 
     /**
