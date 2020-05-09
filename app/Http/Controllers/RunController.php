@@ -9,9 +9,42 @@ use App\Hitokoto;
 use App\Images;
 use App\RMoments;
 use App\RUsers;
+use App\RMedals;
+use App\LinkUMs;
+use App\Http\Controllers\SystemController as System;
 
 class RunController extends Controller
 {
+    /**
+     * 单次里程成就：5km, 10km, 15km, 20km, 半马(21.0975=21.09), 全马(42.195=42.19), 50km, 100km
+     */
+    private function checkMedals($rid, $distance){
+        $distances = [5, 10, 15, 20, 21.09, 42.19, 50, 100];
+        $medalkeys = ['star_1_act','star_2_act','star_3_act','star_4_act','star_5_act','star_6_act','star_7_act','star_8_act'];
+        if($distance>5){
+            $index = 0;  //
+            for($i=0; $i<count($distances); $i++){
+                if($distance>=$distances[$i]) $index = $i;
+                else break;
+            }
+            $medal = RMedals::where('mkey', $medalkeys[$index])->first();
+            $isAchieved = LinkUMs::where('rid', $rid)->where('meid', $medal->meid)->get();
+            if(count($isAchieved)==0){  //未获取过，可以进行授予
+                $me = new LinkUMs();
+                $me->fill([
+                    'rid' => $rid,
+                    'meid' => $medal->meid
+                ]);
+                $me->save();
+                System::systemNotice([
+                    'from' => 0, 
+                    'to' => $rid, 
+                    'type' => 0, 
+                    'msg' => "你新获得一枚勋章<".$medal->name.">"
+                ]);
+            }
+        }
+    }
     /** 
      * 获取随机一言
      */
@@ -95,7 +128,11 @@ class RunController extends Controller
                     DB::beginTransaction();
                         $run = RRuns::where('ruid', $request->ruid)->update($request->all());
                     DB::commit();
-                    return returnData(true, '操作成功', RRuns::where('ruid', $request->ruid)->first());
+                    $data = RRuns::where('ruid', $request->ruid)->first();
+                    // 检测：单次里程勋章
+                    $this->checkMedals($data->rid, $data->distance);
+
+                    return returnData(true, '操作成功', $data);
                 } catch (\Throwable $th) {
                     DB::rollBack();
                     return returnData(false, $th);
@@ -113,6 +150,9 @@ class RunController extends Controller
                 DB::commit();
                 // 处理返回数据
                 $data = RRuns::where('ruid', $run->id)->first();
+                // 检测：单次里程勋章
+                $this->checkMedals($data->rid, $data->distance);
+                
                 return returnData(true, '操作成功', $data);
             } catch (\Throwable $th) {
                 DB::rollBack();
