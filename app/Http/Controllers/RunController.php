@@ -9,9 +9,42 @@ use App\Hitokoto;
 use App\Images;
 use App\RMoments;
 use App\RUsers;
+use App\RMedals;
+use App\LinkUMs;
+use App\Http\Controllers\SystemController as System;
 
 class RunController extends Controller
 {
+    /**
+     * 单次里程成就：5km, 10km, 15km, 20km, 半马(21.0975=21.09), 全马(42.195=42.19), 50km, 100km
+     */
+    private function checkMedals($rid, $distance){
+        $distances = [5, 10, 15, 20, 21.09, 42.19, 50, 100];
+        $medalkeys = ['star_1_act','star_2_act','star_3_act','star_4_act','star_5_act','star_6_act','star_7_act','star_8_act'];
+        if($distance>5){
+            $index = 0;  //
+            for($i=0; $i<count($distances); $i++){
+                if($distance>=$distances[$i]) $index = $i;
+                else break;
+            }
+            $medal = RMedals::where('mkey', $medalkeys[$index])->first();
+            $isAchieved = LinkUMs::where('rid', $rid)->where('meid', $medal->meid)->get();
+            if(count($isAchieved)==0){  //未获取过，可以进行授予
+                $me = new LinkUMs();
+                $me->fill([
+                    'rid' => $rid,
+                    'meid' => $medal->meid
+                ]);
+                $me->save();
+                System::systemNotice([
+                    'from' => 0, 
+                    'to' => $rid, 
+                    'type' => 0, 
+                    'msg' => "你新获得一枚勋章<".$medal->name.">"
+                ]);
+            }
+        }
+    }
     /** 
      * 获取随机一言
      */
@@ -95,7 +128,11 @@ class RunController extends Controller
                     DB::beginTransaction();
                         $run = RRuns::where('ruid', $request->ruid)->update($request->all());
                     DB::commit();
-                    return returnData(true, '操作成功', RRuns::where('ruid', $request->ruid)->first());
+                    $data = RRuns::where('ruid', $request->ruid)->first();
+                    // 检测：单次里程勋章
+                    $this->checkMedals($data->rid, $data->distance);
+
+                    return returnData(true, '操作成功', $data);
                 } catch (\Throwable $th) {
                     DB::rollBack();
                     return returnData(false, $th);
@@ -113,6 +150,9 @@ class RunController extends Controller
                 DB::commit();
                 // 处理返回数据
                 $data = RRuns::where('ruid', $run->id)->first();
+                // 检测：单次里程勋章
+                $this->checkMedals($data->rid, $data->distance);
+                
                 return returnData(true, '操作成功', $data);
             } catch (\Throwable $th) {
                 DB::rollBack();
@@ -130,37 +170,33 @@ class RunController extends Controller
         if($request->has('ruid') && $request->has('rid') && $request->has('img')){
             $run = RRuns::where('ruid', $request->ruid)->where('rid', $request->rid)->first();
             if($run && $run->isshared==0){
-                if($shareImg || $request->has('text')){ //图片和文字，必须有一个
-                    try {
-                        DB::beginTransaction();
-                            //更新运动分享标志
-                            DB::table('r_runs')
-                                ->where('ruid', $request->ruid)
-                                ->update(['isshared' => 1]);
-                            //新建动态：type=1 打卡分享类型
-                            $moment = new RMoments();
-                            $moment->fillable(['rid', 'text', 'type']);
-                            $moment->fill([
-                                'rid' => $run->rid,
-                                'text' => $request->has('text') ? $request->text : null,
-                                'type' => 1   //打卡分享1
-                            ]);
-                            $moment->save();
-                            //保存分享图
-                            $image = new Images();
-                            $img = $request->img;
-                            $img['key'] = 'moment';
-                            $img['key_id'] = $moment->id;
-                            $image->fill($img);
-                            $image->save();
-                        DB::commit();
-                        return returnData(true, '操作成功');
-                    } catch (\Throwable $th) {
-                        DB::rollBack();
-                        return returnData(false, $th);
-                    }
-                }else{
-                    return returnData(false, '图片和文字，必须有一个');
+                try {
+                    DB::beginTransaction();
+                        //更新运动分享标志
+                        DB::table('r_runs')
+                            ->where('ruid', $request->ruid)
+                            ->update(['isshared' => 1]);
+                        //新建动态：type=1 打卡分享类型
+                        $moment = new RMoments();
+                        $moment->fillable(['rid', 'text', 'type']);
+                        $moment->fill([
+                            'rid' => $run->rid,
+                            'text' => $request->has('text') ? $request->text : null,
+                            'type' => 1   //打卡分享1
+                        ]);
+                        $moment->save();
+                        //保存分享图
+                        $image = new Images();
+                        $img = $request->img;
+                        $img['key'] = 'moment';
+                        $img['key_id'] = $moment->id;
+                        $image->fill($img);
+                        $image->save();
+                    DB::commit();
+                    return returnData(true, '操作成功');
+                } catch (\Throwable $th) {
+                    DB::rollBack();
+                    return returnData(false, $th);
                 }
             }else{
                 return returnData(false, '您已经分享过了', '或者ruid和rid不匹配');
@@ -337,10 +373,10 @@ class RunController extends Controller
             try {
                 $run = RRuns::where('ruid', $request->ruid)->first();
                 //获取图片
-                $run['img'] = Images::where('key', 'run')
-                                    ->where('key_id', $request->ruid)
-                                    ->select('original', 'thumbnail')
-                                    ->first();
+                // $run['img'] = Images::where('key', 'run')
+                //                     ->where('key_id', $request->ruid)
+                //                     ->select('original', 'thumbnail')
+                //                     ->first();
                 return returnData(true, '操作成功', $run);
             } catch (\Throwable $th) {
                 return returnData(false, $th);
@@ -374,13 +410,13 @@ class RunController extends Controller
                             ->skip(($pageindex-1)*$pagesize)
                             ->take($pagesize)
                             ->get();
-                for($n = 0; $n<count($runs); $n++){
-                    //获取图片
-                    $runs[$n]['imgs'] = Images::where('key', 'run')
-                                            ->where('key_id', $runs[$n]['ruid'])
-                                            ->select('original', 'thumbnail')
-                                            ->first();
-                }
+                // for($n = 0; $n<count($runs); $n++){
+                //     //获取图片
+                //     $runs[$n]['imgs'] = Images::where('key', 'run')
+                //                             ->where('key_id', $runs[$n]['ruid'])
+                //                             ->select('original', 'thumbnail')
+                //                             ->first();
+                // }
                 //返回数据处理
                 $re = [
                     'rid' => $request->rid,

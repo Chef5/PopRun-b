@@ -62,13 +62,14 @@ APP_ENV=production
 APP_DEBUG=false
 APP_URL=http://dev.run.nunet.cn
 
+WX_APPID=
+WX_SECRET=
+
 TIMEZONE=Asia/Shanghai
 DB_DATABASE=poprun
 DB_USERNAME=root
 DB_PASSWORD=root
 ```
-
-
 
 ## Deploy
 
@@ -81,6 +82,9 @@ composer install  #first time
 php artisan key:generate  #first time
 php artisan migrate  #first time
 php artisan up
+
+crontab -e
+* * * * * php  /home/dev.run/PopRun-b/artisan schedule:run >> /dev/null 2>&1
 
 chown -R www-data:www-data /home/dev.run/PopRun-b
 chmod -R 775 resources
