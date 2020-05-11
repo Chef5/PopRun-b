@@ -96,7 +96,7 @@ class MomentsController extends Controller
         }
     }
 
-    // 发表评论 遗留：缺少判断是否存在moid
+    // 发表评论
     public function doComment(Request $request){
         if($request->has('rid') && $request->has('moid') && $request->has('comment')){
             $comment = new Comments();
@@ -127,6 +127,23 @@ class MomentsController extends Controller
             }
         }else{
             return returnData(false, "缺rid、moid或者评论内容", null);
+        }
+    }
+
+    // 删除评论
+    public function delComment(Request $request){
+        if($request->has('coid')){
+            DB::beginTransaction(); //事务开始
+            try {
+                Comments::where('coid', $request->coid)->delete(); //删除评论
+                DB::commit(); //提交事务
+                return returnData(true, "操作成功", null);
+            } catch (\Throwable $th) {
+                DB::rollback(); //回滚
+                return returnData(false, $th);
+            }
+        }else{
+            return returnData(false, "缺coid", null);
         }
     }
 
