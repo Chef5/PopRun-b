@@ -21,7 +21,7 @@ use Illuminate\Http\Request;
  */
 Route::prefix('main')->group(function () {
     //获取token
-    Route::get('/getToken', function(Request $request){
+    Route::get('/getToken', function (Request $request) {
         return var_dump($request);
     });
     //获取用户openid
@@ -46,7 +46,7 @@ Route::prefix('main')->group(function () {
  * 跑步相关
  */
 Route::prefix('run')->group(function () {
-    Route::get('/', function(){
+    Route::get('/', function () {
         return "跑步接口暂未开发完成";
     });
     // 获取随机一言
@@ -79,7 +79,7 @@ Route::prefix('run')->group(function () {
  * 动态圈子
  */
 Route::prefix('moments')->group(function () {
-    Route::get('/', function(){
+    Route::get('/', function () {
         return "动态接口暂未开发完成";
     });
     // 发布动态
@@ -100,13 +100,15 @@ Route::prefix('moments')->group(function () {
     Route::post('/getMoments', 'MomentsController@getMoments');
     // 获取某条动态
     Route::get('/getMomentById', 'MomentsController@getMomentById');
+    // 获取热门动态
+    Route::get('/getHot', 'MomentsController@getHot');
 });
 
 /**
  * 活动广场
  */
 Route::prefix('pub')->group(function () {
-    Route::get('/', function(){
+    Route::get('/', function () {
         return "活动接口暂未开发完成";
     });
     // 创建活动
@@ -135,7 +137,7 @@ Route::prefix('pub')->group(function () {
  * 个人中心
  */
 Route::prefix('user')->group(function () {
-    Route::get('/', function(){
+    Route::get('/', function () {
         return "token认证暂未开发完成";
     })->middleware('userAuth');
     //获取个人信息
@@ -168,7 +170,7 @@ Route::prefix('user')->group(function () {
  * 管理接口
  */
 Route::prefix('admin')->group(function () {
-    Route::get('/', function(){
+    Route::get('/', function () {
         return "管理接口暂未开发完成";
     });
     // 初始化数据
@@ -183,7 +185,7 @@ Route::prefix('admin')->group(function () {
  * 定时任务测试
  */
 Route::prefix('test')->group(function () {
-    Route::get('/', function(){
+    Route::get('/', function () {
         return "测试接口暂未开发完成";
     });
     // 月勋章授予
