@@ -365,7 +365,7 @@ class MomentsController extends Controller
     // 获取热门动态
     public function getHot(Request $request)
     {
-        date_default_timezone_set('prc');
+        // date_default_timezone_set('prc');
         $timeStart = date('Y-m-d  H:i:s', strtotime("-1 week"));
         $timeEnd = date('Y-m-d  H:i:s');
             //order by写成原生的加在那句后面
@@ -378,8 +378,8 @@ class MomentsController extends Controller
                                 ->groupBy('moid')
                                 ->orderBy('count', 'desc')  //这里将统计的数量排序，下面first取第一条
                                 ->first();
+          if($likes){
             $hotMoid=$like['moid'];
-          
             try {
                 $moment = RMoments::join('r_users', 'r_users.rid', '=', 'r_moments.rid')
                     ->select('r_moments.*', 'r_users.nickname', 'r_users.img')
@@ -423,5 +423,9 @@ class MomentsController extends Controller
             } catch (\Throwable $th) {
                 return returnData(false, $th);
             }
+          }else{
+            return returnData(false, "最近没有点赞数据", null);
+          }
+           
     }
 }
