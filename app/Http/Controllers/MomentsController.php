@@ -394,7 +394,7 @@ class MomentsController extends Controller
                                 ->groupBy('moid')
                                 ->orderBy('count', 'desc')  //这里将统计的数量排序，下面first取第一条
                                 ->first();
-          if($likes){
+          if($like){
             $hotMoid=$like['moid'];
             try {
                 $moment = RMoments::join('r_users', 'r_users.rid', '=', 'r_moments.rid')
