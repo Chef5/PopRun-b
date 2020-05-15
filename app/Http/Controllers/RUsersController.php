@@ -325,4 +325,15 @@ class RUsersController extends Controller
             return false;
         }
     }
+
+    /**
+     * 查询所有校区
+     */
+    public function getSchools(Request $request){
+        try {
+            return returnData(true, '操作成功', RUsers::where('team', '<>', 'system')->select('team')->distinct()->get());
+        } catch (\Throwable $th) {
+            return returnData(false, $th);
+        }
+    }
 }

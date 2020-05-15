@@ -164,6 +164,8 @@ Route::prefix('user')->group(function () {
     Route::get('/getProvicy', 'RUsersController@getProvicy');
     //获取个人运动数据统计
     Route::get('/getMyRunsData', 'RunController@getMyRunsData');
+    //查询所有校区
+    Route::get('/getSchools', 'RUsersController@getSchools');
 });
 
 /**
