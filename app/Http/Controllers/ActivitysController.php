@@ -43,19 +43,22 @@ class ActivitysController extends Controller
                     $activity->save();
 
                     //保存内容图片
-                    $original = []; $thumbnail = []; $i = 0;
-                    foreach($request->imgs as $img){
-                        $img['key'] = "activity";
-                        $img['key_id'] = $activity->id;
-
-                        $activityImg = new Images();
-                        $activityImg->fillable(array_keys($img));
-                        $activityImg->fill($img);
-                        $activityImg->save();
-
-                        $original[$i] = $img['original'];
-                        $thumbnail[$i] = $img['thumbnail'];
-                        $i++;
+                    $original = []; $thumbnail = [];
+                    if($request->has('imgs')){
+                        $i = 0;
+                        foreach($request->imgs as $img){
+                            $img['key'] = "activity";
+                            $img['key_id'] = $activity->id;
+    
+                            $activityImg = new Images();
+                            $activityImg->fillable(array_keys($img));
+                            $activityImg->fill($img);
+                            $activityImg->save();
+    
+                            $original[$i] = $img['original'];
+                            $thumbnail[$i] = $img['thumbnail'];
+                            $i++;
+                        }
                     }
                 DB::commit();
                 // 返回数据
