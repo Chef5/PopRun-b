@@ -382,8 +382,8 @@ class MomentsController extends Controller
     public function getHot(Request $request)
     {
         // date_default_timezone_set('prc');
-        $timeStart = date('Y-m-d  H:i:s', strtotime("-1 week"));
-        $timeEnd = date('Y-m-d  H:i:s');
+        $timeStart = date('Y-m-d H:i:s', strtotime("-1 week"));
+        $timeEnd = date('Y-m-d H:i:s');
             //order by写成原生的加在那句后面
             // $likes=DB::select('select moid,count(moid) as count from link_u_like_ms where created_at between "'.$timeStart.'" and "'.$timeEnd.'" group by moid order by count desc');
             // $like = $likes[0];//取第一条 同下面的first*()方法一样的效果
@@ -394,15 +394,14 @@ class MomentsController extends Controller
                                 ->groupBy('moid')
                                 ->orderBy('count', 'desc')  //这里将统计的数量排序，下面first取第一条
                                 ->first();
-          if($like){
-            $hotMoid=$like['moid'];
+          if(true){
+            $hotMoid=1;
             try {
                 $moment = RMoments::join('r_users', 'r_users.rid', '=', 'r_moments.rid')
                     ->select('r_moments.*', 'r_users.nickname', 'r_users.img')
                     ->where('moid', $hotMoid)
-                    ->whereBetween('created_at', [$timeStart, $timeEnd])
                     ->first();
-                if($moment){
+                if($moment && $moment->created_at > $timeStart){
                     $data = []; //动态联合数据
                     $data = $moment;
                     //获取评论
@@ -437,7 +436,7 @@ class MomentsController extends Controller
                         'original' => $original,
                         'thumbnail' => $thumbnail
                     ];
-                    return returnData(true, "操作成功", $data);
+                    return returnData(true, '操作成功', $data);
                 }else{
                     return returnData(false, "这条动态不在热门推荐时间范围内", null);
                 }
