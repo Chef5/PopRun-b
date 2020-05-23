@@ -18,7 +18,7 @@ class PublicController extends Controller
         ];
         $validator = Validator::make($inputData,$rules);
         if($validator->fails()){
-            return returnData(false, "校验失败", back()->withErrors($validator)->withInput());
+            return returnData(false, "校验失败", $validator);
         }
         $photo = $inputData['img'];
         $file_name = uniqid();
@@ -33,10 +33,12 @@ class PublicController extends Controller
             $min_file_path = '/'.$file_name.'-min-'.'200x'.round(200*$dfile->height()/$dfile->width()).'.'.$photo->getClientOriginalExtension();
             $image = Image::make($photo)->resize(200, null, function ($constraint) {$constraint->aspectRatio();})->save($file_path.$min_file_path);
             // 保存原图   resources/images/2020-01-31/5e3319bcafcae-1080x1920.jpg
-            $original_file_path = '/'.$file_name.'-'.$dfile->width().'x'.$dfile->height().'.'.$photo->getClientOriginalExtension();
-            $image = Image::make($photo)->save($file_path.$original_file_path);
+            // $original_file_path = '/'.$file_name.'-'.$dfile->width().'x'.$dfile->height().'.'.$photo->getClientOriginalExtension();
+            // $image = Image::make($photo)->save($file_path.$original_file_path);  //不能原图保存，服务器带宽获取太慢
+            $original_file_path = '/'.$file_name.'-'.'1080x'.round(1080*$dfile->height()/$dfile->width()).'.'.$photo->getClientOriginalExtension();
+            $image = Image::make($photo)->resize(1080, null, function ($constraint) {$constraint->aspectRatio();})->save($file_path.$original_file_path);
             //处理返回网络url
-            $imgUrl = 'http://'.$request->server('HTTP_HOST').'/'.$file_relative_path;
+            $imgUrl = 'https://'.$request->server('HTTP_HOST').'/'.$file_relative_path;
             $data = [
                 'name' => $photo->getClientOriginalName(),
                 'store' => $file_name,
