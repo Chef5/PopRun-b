@@ -381,71 +381,63 @@ class MomentsController extends Controller
     // 获取热门动态
     public function getHot(Request $request)
     {
-        // date_default_timezone_set('prc');
         $timeStart = date('Y-m-d H:i:s', strtotime("-1 week"));
         $timeEnd = date('Y-m-d H:i:s');
-            //order by写成原生的加在那句后面
-            // $likes=DB::select('select moid,count(moid) as count from link_u_like_ms where created_at between "'.$timeStart.'" and "'.$timeEnd.'" group by moid order by count desc');
-            // $like = $likes[0];//取第一条 同下面的first*()方法一样的效果
-
-            //把前面的查询给拆成一个个方法  first()直接获取最多那一条数据           
-            $like=LinkULikeMs::select(DB::raw('moid, count(moid) as count'))   
-                                ->whereBetween('created_at', [$timeStart, $timeEnd])
-                                ->groupBy('moid')
-                                ->orderBy('count', 'desc')  //这里将统计的数量排序，下面first取第一条
-                                ->first();
-          if(true){
-            $hotMoid=1;
+        $moment = RMoments::join('link_u_like_ms', 'r_moments.moid', '=', 'link_u_like_ms.moid')
+                            ->select('r_moments.moid', DB::raw('count(link_u_like_ms.moid) as count'))
+                            ->whereBetween('r_moments.created_at', [$timeStart, $timeEnd])
+                            ->groupBy('r_moments.moid')
+                            ->orderBy('count', 'desc')  //这里将统计的数量排序，下面first取第一条
+                            ->orderBy('r_moments.created_at', 'desc')  //这里将统计的数量排序，下面first取第一条
+                            ->first();
+        if($moment){
+            $hotMoid = $moment->moid;
             try {
                 $moment = RMoments::join('r_users', 'r_users.rid', '=', 'r_moments.rid')
                     ->select('r_moments.*', 'r_users.nickname', 'r_users.img')
                     ->where('moid', $hotMoid)
                     ->first();
-                if($moment && $moment->created_at > $timeStart){
-                    $data = []; //动态联合数据
-                    $data = $moment;
-                    //获取评论
-                    $data['comments'] = Comments::join('r_users', 'r_users.rid', '=', 'comments.rid')
-                        ->where('moid', $hotMoid)
-                        ->select('comments.*', 'r_users.nickname')
-                        ->orderBy('created_at', 'asc')
-                        ->get();
-                    //获取点赞
-                    $data['likes'] = LinkULikeMs::join('r_users', 'r_users.rid', '=', 'link_u_like_ms.rid')
-                        ->where('moid', $hotMoid)
-                        ->select('link_u_like_ms.*', 'r_users.img')
-                        ->orderBy('created_at', 'asc')
-                        ->get();
-                    //获取图片
-                    $imgs = Images::where('key', 'moment')->where('key_id', $hotMoid)->get();
-                    $original = [];
-                    $thumbnail = [];
-                    foreach ($imgs as $img) {
-                        $original[] = [
-                            "url" => $img->original,
-                            "width" => $img->width,
-                            "height" => $img->height
-                        ];
-                        $thumbnail[] = [
-                            "url" => $img->thumbnail,
-                            "width" => $img->mwidth,
-                            "height" => $img->mheight
-                        ];
-                    }
-                    $data['imgs'] = [
-                        'original' => $original,
-                        'thumbnail' => $thumbnail
+                $data = []; //动态联合数据
+                $data = $moment;
+                //获取评论
+                $data['comments'] = Comments::join('r_users', 'r_users.rid', '=', 'comments.rid')
+                    ->where('moid', $hotMoid)
+                    ->select('comments.*', 'r_users.nickname')
+                    ->orderBy('created_at', 'asc')
+                    ->get();
+                //获取点赞
+                $data['likes'] = LinkULikeMs::join('r_users', 'r_users.rid', '=', 'link_u_like_ms.rid')
+                    ->where('moid', $hotMoid)
+                    ->select('link_u_like_ms.*', 'r_users.img')
+                    ->orderBy('created_at', 'asc')
+                    ->get();
+                //获取图片
+                $imgs = Images::where('key', 'moment')->where('key_id', $hotMoid)->get();
+                $original = [];
+                $thumbnail = [];
+                foreach ($imgs as $img) {
+                    $original[] = [
+                        "url" => $img->original,
+                        "width" => $img->width,
+                        "height" => $img->height
                     ];
-                    return returnData(true, '操作成功', $data);
-                }else{
-                    return returnData(false, "这条动态不在热门推荐时间范围内", null);
+                    $thumbnail[] = [
+                        "url" => $img->thumbnail,
+                        "width" => $img->mwidth,
+                        "height" => $img->mheight
+                    ];
                 }
+                $data['imgs'] = [
+                    'original' => $original,
+                    'thumbnail' => $thumbnail
+                ];
+                return returnData(true, '操作成功', $data);
             } catch (\Throwable $th) {
                 return returnData(false, $th);
             }
-          }else{
+        }else{
             return returnData(false, "最近没有点赞数据", null);
-          }
+        }
            
     }
 }
