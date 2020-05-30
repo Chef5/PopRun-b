@@ -8,6 +8,7 @@ use App\RRuns;
 use App\RUsers;
 use App\RMedals;
 use App\LinkUMs;
+use App\LinkUHs;
 use App\Http\Controllers\SystemController as System;
 
 class testController extends Controller
@@ -167,6 +168,58 @@ class testController extends Controller
             $this->noticeUser($user->rid, $rank_d->name);
         }
         // return returnData(true, [$timeStart,$timeEnd]);
+    }
+
+    public function grantHonor(){
+        // $honors = [
+        //     ['name' => '赤脚', 'desc' => 'lv0'],
+        //     ['name' => '草鞋', 'desc' => 'lv1'],  //1
+        //     ['name' => '棉鞋', 'desc' => 'lv2'],  //10
+        //     ['name' => '布鞋', 'desc' => 'lv3'],  //50
+        //     ['name' => '板鞋', 'desc' => 'lv4'],  //100
+        //     ['name' => '高跟鞋', 'desc' => 'lv5'], //200
+        //     ['name' => '球鞋', 'desc' => 'lv6'],   //400
+        //     ['name' => '运动鞋', 'desc' => 'lv7'], //800
+        //     ['name' => '跑鞋', 'desc' => 'lv8']    //1000
+        // ];
+        //统计每个用户的运动次数
+        $userRuns = RUsers::join('r_runs', 'r_users.rid', '=', 'r_runs.rid')
+                            ->where('r_runs.distance', '<>', null) //排除未完成运动
+                            ->select(
+                                DB::raw(
+                                    'r_users.rid,
+                                    count(r_runs.ruid) as count
+                                    '
+                                )
+                            )
+                            ->groupBy('r_runs.rid')
+                            ->get();
+        foreach($userRuns as $user){
+            $hoid = 1;
+            if($user->count < 1) $hoid = 1;
+            else if($user->count < 10) $hoid = 2;
+            else if($user->count < 50) $hoid = 3;
+            else if($user->count < 100) $hoid = 4;
+            else if($user->count < 200) $hoid = 5;
+            else if($user->count < 400) $hoid = 6;
+            else if($user->count < 800) $hoid = 7;
+            else if($user->count < 1000) $hoid = 8;
+            else $hoid = 9;
+
+            $honor = new LinkUHs();
+            $honor->fill([
+                'rid' => $user->rid,
+                'hoid' => $hoid
+            ]);
+            if($honor->save()){
+                System::systemNotice([
+                    'from' => 0, 
+                    'to' => $user->rid, 
+                    'type' => 0, 
+                    'msg' => "你已累计运动".$user->count."次，授予您新的的称号: lv".$hoid
+                ]);
+            }
+        }
     }
 
     private function noticeUser($rid, $medalName){

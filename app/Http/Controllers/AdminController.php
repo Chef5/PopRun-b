@@ -17,14 +17,14 @@ class AdminController extends Controller
     // 初始数据-等级称号
     protected $honors = [
         ['name' => '赤脚', 'desc' => 'lv0'],
-        ['name' => '草鞋', 'desc' => 'lv1'],
-        ['name' => '棉鞋', 'desc' => 'lv2'],
-        ['name' => '布鞋', 'desc' => 'lv3'],
-        ['name' => '板鞋', 'desc' => 'lv4'],
-        ['name' => '高跟鞋', 'desc' => 'lv5'],
-        ['name' => '球鞋', 'desc' => 'lv6'],
-        ['name' => '运动鞋', 'desc' => 'lv7'],
-        ['name' => '跑鞋', 'desc' => 'lv8']
+        ['name' => '草鞋', 'desc' => 'lv1'],  //1
+        ['name' => '棉鞋', 'desc' => 'lv2'],  //10
+        ['name' => '布鞋', 'desc' => 'lv3'],  //50
+        ['name' => '板鞋', 'desc' => 'lv4'],  //100
+        ['name' => '高跟鞋', 'desc' => 'lv5'], //200
+        ['name' => '球鞋', 'desc' => 'lv6'],   //400
+        ['name' => '运动鞋', 'desc' => 'lv7'], //800
+        ['name' => '跑鞋', 'desc' => 'lv8']    //1000
     ];
     // 初始数据-勋章 type:0不可重复获得 1可重复获得 
     protected $medals = [

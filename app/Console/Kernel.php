@@ -17,6 +17,7 @@ class Kernel extends ConsoleKernel
         \App\Console\Commands\GrantMonthMedal::class,
         \App\Console\Commands\GrantSeasonMedal::class,
         \App\Console\Commands\GrantRankingMedal::class,
+        \App\Console\commands\GrantHonor::class,
     ];
 
     /**
@@ -34,6 +35,8 @@ class Kernel extends ConsoleKernel
         $schedule->command('command:GrantSeasonMedal')->cron('35 00 01 */3 *');
         //获取月排行榜勋章
         $schedule->command('command:GrantRankingMedal')->monthlyOn(1, '00:40');
+        //获取称号
+        $schedule->command('command:GrantHonor')->dailyAt('00:01');;
     }
 
     /**

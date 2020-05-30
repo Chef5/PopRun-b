@@ -196,4 +196,6 @@ Route::prefix('test')->group(function () {
     Route::get('/grantSeasonMedal', 'testController@grantSeasonMedal');
     // 月排行榜勋章授予
     Route::get('/grantRankingMedal', 'testController@grantRankingMedal');
+    // 称号授予
+    Route::get('/grantHonor', 'testController@grantHonor');
 });
