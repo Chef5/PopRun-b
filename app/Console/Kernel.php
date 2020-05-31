@@ -36,7 +36,7 @@ class Kernel extends ConsoleKernel
         //获取月排行榜勋章
         $schedule->command('command:GrantRankingMedal')->monthlyOn(1, '00:40');
         //获取称号
-        $schedule->command('command:GrantHonor')->dailyAt('00:01');;
+        $schedule->command('command:GrantHonor')->dailyAt('00:01');
     }
 
     /**

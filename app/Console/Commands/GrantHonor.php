@@ -4,6 +4,12 @@ namespace App\Console\Commands;
 
 use Illuminate\Console\Command;
 
+use DB;
+use App\RRuns;
+use App\RUsers;
+use App\LinkUHs;
+use App\Http\Controllers\SystemController as System;
+
 class GrantHonor extends Command
 {
     /**
