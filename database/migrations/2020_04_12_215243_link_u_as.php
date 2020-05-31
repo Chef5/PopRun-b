@@ -16,6 +16,7 @@ class LinkUAs extends Migration
         Schema::create('link_u_as', function (Blueprint $table) {
             $table->integer('rid')->unsigned();
             $table->integer('acid')->unsigned();
+            $table->tinyInteger('isfinished')->unsigned()->default(0)->comment('0未完成，1已完成');
             $table->timestamps();
             
             //外键设置得先定义字段，再设置

@@ -35,6 +35,7 @@ class ActivitysController extends Controller
                     $activity->fill([
                         'title' => $request->title,  //标题
                         'desc' => $request->desc,    //描述
+                        'distance' => $request->distance,//完成条件
                         'cover' => $coverImg->id,    //封面图id
                         'meid' => $request->meid,    //勋章meid
                         'content' => $request->has('content') ? $request->content : "",  //内容
@@ -297,11 +298,11 @@ class ActivitysController extends Controller
      */
     public function signActivityCheck(Request $request){
         if($request->has('rid') && $request->has('acid')){
-            $signlog = LinkUAs::where('rid', $request->rid)->where('acid', $request->acid)->get();
-            if(count($signlog)==0){
-                return returnData(false, "未报名", null);
-            }else{
+            $signlog = LinkUAs::where('rid', $request->rid)->where('acid', $request->acid)->first();
+            if($signlog){
                 return returnData(true, "已报名", $signlog);
+            }else{
+                return returnData(false, "未报名", null);
             }
         }else{
             return returnData(false, "缺失rid或acid", null);

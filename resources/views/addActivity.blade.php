@@ -14,6 +14,9 @@
   <meta name="format-detection" content="telephone=no">
   <link rel="stylesheet" href="../../layui/css/layui.css" media="all">
   <style>
+    .layui-input input{
+      width: 100%;
+    }
     .layui-upload-img {
       width: 320px;
     }
@@ -38,7 +41,7 @@
         <label for="title" class="layui-form-label">
           <span style="color:red">*</span>活动标题
         </label>
-        <div class="layui-input-inline">
+        <div class="layui-input-block">
           <input type="text" id="title" name="title" required="" lay-verify="required" autocomplete="off" placeholder="请输入活动标题" class="layui-input">
         </div>
       </div>
@@ -46,8 +49,24 @@
         <label for="desc" class="layui-form-label">
           <span style="color:red">*</span>简要描述
         </label>
-        <div class="layui-input-inline">
+        <div class="layui-input-block">
           <input type="text" id="desc" name="desc" required="" lay-verify="required" autocomplete="off" placeholder="请输入活动描述" class="layui-input">
+        </div>
+      </div>
+      <div class="layui-form-item">
+        <label for="distance" class="layui-form-label">
+          <span style="color:red">*</span>完成条件
+        </label>
+        <div class="layui-input-block">
+          <input type="number" id="distance" name="distance" required="" value="1" min="1" max="100" lay-verify="required" autocomplete="off" placeholder="完成条件:1-100（km）" class="layui-input">
+        </div>
+      </div>
+      <div class="layui-form-item">
+        <label for="period" class="layui-form-label">
+          结束时间
+        </label>
+        <div class="layui-input-block">
+          <input type="text" id="period" name="period" autocomplete="off" placeholder="结束时间（默认当前+30天）" class="layui-input">
         </div>
       </div>
       <div class="layui-form-item">
@@ -63,7 +82,7 @@
         <label for="mkey" class="layui-form-label">
           <span style="color:red">*</span>检索串
         </label>
-        <div class="layui-input-inline">
+        <div class="layui-input-block">
           <input type="text" id="mkey" name="mkey" required="" lay-verify="required" autocomplete="off" placeholder="检索串不能重复" class="layui-input">
         </div>
       </div>
@@ -71,15 +90,15 @@
         <label for="type" class="layui-form-label">
           <span style="color:red">*</span>类型
         </label>
-        <div class="layui-input-inline">
-          <input type="text" id="type" name="type" value="0" required="" lay-verify="required" autocomplete="off" placeholder="0不可重复获得，1可以重复获得" class="layui-input">
+        <div class="layui-input-block">
+          <input type="text" style="cursor:not-allowed" disabled id="type" name="type" value="0" required="" lay-verify="required" autocomplete="off" placeholder="0不可重复获得，1可以重复获得" class="layui-input">
         </div>
       </div>
       <div class="layui-form-item">
         <label for="name" class="layui-form-label">
           <span style="color:red">*</span>勋章名称
         </label>
-        <div class="layui-input-inline">
+        <div class="layui-input-block">
           <input type="text" id="name" name="name" required="" lay-verify="required" autocomplete="off" placeholder="勋章名称不能重复" class="layui-input">
         </div>
       </div>
@@ -87,7 +106,7 @@
         <label for="honor_desc" class="layui-form-label">
           <span style="color:red">*</span>勋章描述
         </label>
-        <div class="layui-input-inline">
+        <div class="layui-input-block">
           <input type="text" id="honor_desc" name="honor_desc"  required="" lay-verify="required" autocomplete="off" placeholder="如：校区前100名，授予您一枚青铜勋章" class="layui-input">
         </div>
       </div>
@@ -125,9 +144,16 @@
   </div>
   <script src="../../layui/layui.js" charset="utf-8"></script>
   <script>
-    layui.use(['form', 'layer', 'upload'], function() {
+    layui.use(['form', 'layer', 'upload', 'laydate'], function() {
       $ = layui.jquery;
-      var form = layui.form, layer = layui.layer, upload = layui.upload;
+      var form = layui.form,
+          layer = layui.layer,
+          upload = layui.upload,
+          laydate = layui.laydate;
+      laydate.render({ 
+        elem: '#period',
+        type: 'datetime'
+      });
       var cover = {};
       var imgs = [];
       //勋章数据
@@ -207,8 +233,7 @@
       //多图片上传
       upload.render({
         elem: '#imgs',
-        url: window.location.protocol+"//" + window.location.host + /api/main/uploadImg' //改成您自己的上传接口
-          ,
+        url: window.location.protocol+"//" + window.location.host + '/api/main/uploadImg',
         field: 'img',
         multiple: true,
         before: function(obj) {

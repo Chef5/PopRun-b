@@ -10,6 +10,7 @@ class RActivitys extends Model
     protected $fillable = [
         'meid',
         'title', 
+        'distance',
         'cover', 
         'desc', 
         'content', 

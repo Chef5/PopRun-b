@@ -11,14 +11,17 @@ use App\RMoments;
 use App\RUsers;
 use App\RMedals;
 use App\LinkUMs;
+use App\LInkUAs;
 use App\Http\Controllers\SystemController as System;
 
 class RunController extends Controller
 {
     /**
      * 单次里程成就：5km, 10km, 15km, 20km, 半马(21.0975=21.09), 全马(42.195=42.19), 50km, 100km
+     * 活动成就：r_activitys.distance
      */
     private function checkMedals($rid, $distance){
+        // 单次里程成就
         $distances = [5, 10, 15, 20, 21.09, 42.19, 50, 100];
         $medalkeys = ['star_1_act','star_2_act','star_3_act','star_4_act','star_5_act','star_6_act','star_7_act','star_8_act'];
         if($distance>5){
@@ -44,6 +47,43 @@ class RunController extends Controller
                 ]);
             }
         }
+        // 活动成就
+        $timeNow = date('Y-m-d H:i:s');
+        $theLastestFinished = LinkUAs::join('r_activitys', 'link_u_as.acid', '=', 'r_activitys.acid')
+                ->select('link_u_as.rid', 'link_u_as.acid', 'link_u_as.isfinished', 'r_activitys.distance', 'r_activitys.period', 'r_activitys.meid')
+                ->where('r_activitys.period', '>', $timeNow)  //有效期内的活动
+                ->where('link_u_as.rid', $rid)  //已报名的活动
+                ->where('link_u_as.isfinished', 0) //未完成的活动
+                ->where('r_activitys.distance', '<=', $distance)  //达到挑战条件
+                ->orderBy('r_activitys.period', 'asc')  //升序
+                ->first();  //获取最近将要过期的
+        if($theLastestFinished){
+            $medal = RMedals::where('meid', $theLastestFinished->meid)->first();
+            try {
+                DB::beginTransaction();
+                    // 更新记录为已完成
+                    LinkUAs::where('rid', $theLastestFinished->rid)
+                            ->where('acid', $theLastestFinished->acid)
+                            ->update(['isfinished'=>1]);
+                    // 勋章授予
+                    $me = new LinkUMs();
+                    $me->fill([
+                        'rid' => $theLastestFinished->rid,
+                        'meid' => $theLastestFinished->meid
+                    ]);
+                    $me->save();
+                    System::systemNotice([
+                        'from' => 0, 
+                        'to' => $rid, 
+                        'type' => 0, 
+                        'msg' => "你新获得一枚勋章<".$medal->name.">"
+                    ]);
+                DB::commit();
+            } catch (\Throwable $th) {
+                DB::rollback();
+            }
+        }
+        
     }
     /** 
      * 获取随机一言

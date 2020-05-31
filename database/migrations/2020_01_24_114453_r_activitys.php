@@ -18,6 +18,7 @@ class RActivitys extends Migration
             $table->integer('meid')->unsigned()->comment('勋章id');
             $table->integer('cover')->unsigned()->comment('封面图id');
             $table->string('title', 30)->comment('标题');
+            $table->tinyInteger('distance')->unsigned()->default(1)->comment('完成条件');
             $table->string('desc', 200)->nullable()->comment('简要描述:当图片介绍时可为空');
             $table->text('content')->nullable()->comment('活动内容:当图片介绍时可为空');
             $table->timestamp('period')->comment('截止时间');
