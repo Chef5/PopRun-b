@@ -207,7 +207,7 @@
       //多图片上传
       upload.render({
         elem: '#imgs',
-        url: 'http://127.0.0.1:8000/api/main/uploadImg' //改成您自己的上传接口
+        url: window.location.protocol+"//" + window.location.host + /api/main/uploadImg' //改成您自己的上传接口
           ,
         field: 'img',
         multiple: true,

@@ -105,7 +105,7 @@
         data.field.img = img;
         console.log(data);
         $.ajax({
-          url: 'http://127.0.0.1:8000/api/pub/doCourse',
+          url: window.location.protocol+"//" + window.location.host + /api/pub/doCourse',
           method: 'post',
           data: data.field,
           dataType: 'JSON',
