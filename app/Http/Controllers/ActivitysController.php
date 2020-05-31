@@ -120,12 +120,14 @@ class ActivitysController extends Controller
      * 获取轮播活动
      */
     public function getSwipper(Request $request){
+        $timeNow = date('Y-m-d H:i:s');
         try {
             $num = $request->has('num') ? $request->num : 3;
             $activitys = RActivitys::inRandomOrder()
                                 // ->latest()   //ordered by the created_at column
                                 ->limit($num)
                                 ->select('acid', 'title', 'desc', 'cover')
+                                ->where('r_activitys.period', '>', $timeNow)  //轮播有效期内的活动
                                 ->get();
             $data = []; //动态联合数据
             for($n = 0; $n<count($activitys); $n++){
