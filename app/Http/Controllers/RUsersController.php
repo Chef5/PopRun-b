@@ -105,7 +105,7 @@ class RUsersController extends Controller
                 $data['medals'] = LinkUMs::where('link_u_ms.rid', $request->rid)
                         ->leftJoin('r_medals', 'link_u_ms.meid', '=', 'r_medals.meid')
                         ->select('link_u_ms.*', 'r_medals.mkey', 'r_medals.type', 'r_medals.name', 'r_medals.desc', 'r_medals.img')
-                        ->orderBy('created_at', 'asc')
+                        ->orderBy('created_at', 'desc')
                         ->get();
                 return returnData(true, '操作成功', $data);
             // } catch (\Throwable $th) {
@@ -127,8 +127,8 @@ class RUsersController extends Controller
                 $data = LinkUHs::join('r_honors', 'link_u_hs.hoid', '=', 'r_honors.hoid')
                         ->where('rid', $request->rid)
                         ->select('link_u_hs.*', 'r_honors.desc', 'r_honors.name')
-                        ->orderBy('created_at', 'asc')
-                        ->get();
+                        ->orderBy('created_at', 'desc')
+                        ->first();
                 return returnData(true, '操作成功', $data);
             } catch (\Throwable $th) {
                 return returnData(false, $th);

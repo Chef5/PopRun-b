@@ -206,19 +206,18 @@ class testController extends Controller
             else if($user->count < 1000) $hoid = 8;
             else $hoid = 9;
 
-            $honor = new LinkUHs();
-            $honor->fill([
-                'rid' => $user->rid,
-                'hoid' => $hoid
+            LinkUHs::where('rid', $user->rid)
+                    ->update(
+                        [
+                            'hoid' => $hoid
+                        ]
+                    );
+            System::systemNotice([
+                'from' => 0, 
+                'to' => $user->rid, 
+                'type' => 0, 
+                'msg' => "你已累计运动 $user->count 次，授予您新的的称号: lv".$hoid
             ]);
-            if($honor->save()){
-                System::systemNotice([
-                    'from' => 0, 
-                    'to' => $user->rid, 
-                    'type' => 0, 
-                    'msg' => "你已累计运动".$user->count."次，授予您新的的称号: lv".$hoid
-                ]);
-            }
         }
     }
 

@@ -44,7 +44,7 @@
       </div>
 
       <div class="layui-upload">
-        <button type="button" class="layui-btn" id="img">上传封面图片</button>
+        <button type="button" class="layui-btn" id="img">上传封面图片（必需）</button>
         <div class="layui-upload-list">
           <img class="layui-upload-img" id="demo1">
           <p id="demoText"></p>
