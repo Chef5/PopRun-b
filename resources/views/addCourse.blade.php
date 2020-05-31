@@ -47,7 +47,7 @@
           <span style="color:red">*</span>内容
         </label>
         <div class="layui-input-block">
-          <textarea id="text" required="" name="text" lay-verify="required" placeholder="请输入课程内容，使用 <br> 换行" class="layui-textarea"></textarea>
+          <textarea id="text" required="" name="text" lay-verify="required" placeholder="请输入课程内容，使用 回车或<br> 换行" class="layui-textarea"></textarea>
         </div>
       </div>
 
@@ -118,7 +118,8 @@
           data: data.field,
           dataType: 'JSON',
           success: function(res) {
-            alert(res.msg)
+            alert(res.msg);
+            window.location.reload();
           },
           error: function(data) {
             return layer.msg(data);

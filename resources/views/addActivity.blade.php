@@ -74,7 +74,7 @@
           活动内容
         </label>
         <div class="layui-input-block">
-          <textarea id="content" name="content" placeholder="请输入活动内容，使用 <br> 换行" class="layui-textarea"></textarea>
+          <textarea id="content" name="content" placeholder="请输入活动内容，使用 回车或<br> 换行" class="layui-textarea"></textarea>
         </div>
       </div>
       
@@ -260,6 +260,7 @@
           dataType: 'JSON',
           success: function(res) {
             alert(res.msg);
+            window.location.reload();
           },
           error: function(data) {
 
