@@ -74,7 +74,7 @@
           活动内容
         </label>
         <div class="layui-input-block">
-          <textarea placeholder="请输入内容" id="content" name="content" placeholder="请输入活动内容" class="layui-textarea"></textarea>
+          <textarea id="content" name="content" placeholder="请输入活动内容，使用 <br> 换行" class="layui-textarea"></textarea>
         </div>
       </div>
       

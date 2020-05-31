@@ -13,6 +13,14 @@
   <meta name="apple-mobile-web-app-capable" content="yes">
   <meta name="format-detection" content="telephone=no">
   <link rel="stylesheet" href="../../layui/css/layui.css" media="all">
+  <style>
+    .layui-input input{
+      width: 100%;
+    }
+    .layui-upload-img {
+      width: 320px;
+    }
+  </style>
   <script>
     var password = localStorage.getItem('admin_password') || prompt('请输入管理密码：');
     if(password != '123123'){
@@ -30,7 +38,7 @@
         <label for="title" class="layui-form-label">
           <span style="color:red">*</span>标题
         </label>
-        <div class="layui-input-inline">
+        <div class="layui-input-block">
           <input type="text" id="title" name="title" required="" lay-verify="required" autocomplete="off" placeholder="请输入课程标题" class="layui-input">
         </div>
       </div>
@@ -39,7 +47,7 @@
           <span style="color:red">*</span>内容
         </label>
         <div class="layui-input-block">
-          <textarea placeholder="请输入内容" id="text" required="" name="text" lay-verify="required" placeholder="请输入课程内容" class="layui-textarea"></textarea>
+          <textarea id="text" required="" name="text" lay-verify="required" placeholder="请输入课程内容，使用 <br> 换行" class="layui-textarea"></textarea>
         </div>
       </div>
 
@@ -105,7 +113,7 @@
         data.field.img = img;
         console.log(data);
         $.ajax({
-          url: window.location.protocol+"//" + window.location.host + /api/pub/doCourse',
+          url: window.location.protocol+"//" + window.location.host + '/api/pub/doCourse',
           method: 'post',
           data: data.field,
           dataType: 'JSON',
