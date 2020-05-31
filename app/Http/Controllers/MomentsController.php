@@ -381,7 +381,8 @@ class MomentsController extends Controller
     // 获取热门动态
     public function getHot(Request $request)
     {
-        $timeStart = date('Y-m-d H:i:s', strtotime("-1 week"));
+        // $timeStart = date('Y-m-d H:i:s', strtotime("-1 week"));
+        $timeStart = date('Y-m-d H:i:s', strtotime("-1 month"));
         $timeEnd = date('Y-m-d H:i:s');
         $moment = RMoments::join('link_u_like_ms', 'r_moments.moid', '=', 'link_u_like_ms.moid')
                             ->select('r_moments.moid', DB::raw('count(link_u_like_ms.moid) as count'))
