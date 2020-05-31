@@ -196,7 +196,7 @@ class testController extends Controller
                             ->get();
         foreach($userRuns as $user){
             $hoid = 1;
-            if($user->count < 1) $hoid = 1;
+            if($user->count <= 1) $hoid = 1;
             else if($user->count < 10) $hoid = 2;
             else if($user->count < 50) $hoid = 3;
             else if($user->count < 100) $hoid = 4;

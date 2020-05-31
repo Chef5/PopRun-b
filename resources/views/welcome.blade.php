@@ -4,7 +4,7 @@
         <meta charset="utf-8">
         <meta name="viewport" content="width=device-width, initial-scale=1">
 
-        <title>Laravel</title>
+        <title>Pop Run！ 跑鸭！</title>
 
         <!-- Fonts -->
         <link href="https://fonts.googleapis.com/css?family=Nunito:200,600" rel="stylesheet">
@@ -71,6 +71,10 @@
                 </div>
                 <div class="links">
                     <a href="#">基于校园运动的一款社交小程序</a>
+                </div>
+                <div class="links">
+                    <a href="/addActivity">创建活动</a>
+                    <a href="/addCourse">创建课程</a>
                 </div>
             </div>
         </div>
