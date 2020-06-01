@@ -4,6 +4,13 @@ namespace App\Console\Commands;
 
 use Illuminate\Console\Command;
 
+use DB;
+use App\RRuns;
+use App\RUsers;
+use App\RMedals;
+use App\LinkUMs;
+use App\Http\Controllers\SystemController as System;
+
 class GrantSeasonMedal extends Command
 {
     /**
@@ -64,9 +71,7 @@ class GrantSeasonMedal extends Command
                 ]);
                 if($me->save()){
                     System::systemNotice([
-                        'from' => 0, 
                         'to' => $user->rid, 
-                        'type' => 0, 
                         'msg' => "你新获得一枚勋章<".$medal->name.">"
                     ]);
                 }

@@ -41,9 +41,7 @@ class GrantRankingMedal extends Command
      */
     private function noticeUser($rid, $medalName){
         System::systemNotice([
-            'from' => 0, 
             'to' => $rid, 
-            'type' => 0, 
             'msg' => "你新获得一枚勋章<".$medalName.">"
         ]);
     }

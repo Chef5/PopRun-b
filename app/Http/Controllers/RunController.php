@@ -24,7 +24,7 @@ class RunController extends Controller
         // 单次里程成就
         $distances = [5, 10, 15, 20, 21.09, 42.19, 50, 100];
         $medalkeys = ['star_1_act','star_2_act','star_3_act','star_4_act','star_5_act','star_6_act','star_7_act','star_8_act'];
-        if($distance>5){
+        if($distance>=5){
             $index = 0;  //
             for($i=0; $i<count($distances); $i++){
                 if($distance>=$distances[$i]) $index = $i;
@@ -72,13 +72,11 @@ class RunController extends Controller
                         'meid' => $theLastestFinished->meid
                     ]);
                     $me->save();
-                    System::systemNotice([
-                        'from' => 0, 
-                        'to' => $rid, 
-                        'type' => 0, 
-                        'msg' => "你新获得一枚勋章<".$medal->name.">"
-                    ]);
                 DB::commit();
+                System::systemNotice([
+                    'to' => $theLastestFinished->rid,
+                    'msg' => "你新获得一枚勋章<".$medal->name.">"
+                ]);
             } catch (\Throwable $th) {
                 DB::rollback();
             }
@@ -170,7 +168,7 @@ class RunController extends Controller
                     DB::commit();
                     $data = RRuns::where('ruid', $request->ruid)->first();
                     // 检测：单次里程勋章
-                    $this->checkMedals($data->rid, $data->distance);
+                    $this->checkMedals($data->rid, $request->distance);
 
                     return returnData(true, '操作成功', $data);
                 } catch (\Throwable $th) {
@@ -191,7 +189,7 @@ class RunController extends Controller
                 // 处理返回数据
                 $data = RRuns::where('ruid', $run->id)->first();
                 // 检测：单次里程勋章
-                $this->checkMedals($data->rid, $data->distance);
+                $this->checkMedals($request->rid, $request->distance);
                 
                 return returnData(true, '操作成功', $data);
             } catch (\Throwable $th) {
