@@ -66,19 +66,22 @@ class GrantHonor extends Command
             else if($user->count < 800) $hoid = 7;
             else if($user->count < 1000) $hoid = 8;
             else $hoid = 9;
-
-            LinkUHs::where('rid', $user->rid)
-                    ->update(
-                        [
-                            'hoid' => $hoid
-                        ]
-                    );
-            System::systemNotice([
-                'from' => 0, 
-                'to' => $user->rid, 
-                'type' => 0, 
-                'msg' => "你已累计运动 $user->count 次，授予您新的的称号: lv".$hoid
-            ]);
+            //先查询是否已存在相同等级的称号
+            $linkHonors = LinkUHs::where('rid', $user->rid)->where('hoid', '=', $hoid)->first();
+            if(!$linkHonors){ //如果不存在，则可以进行称号进阶授予
+                LinkUHs::where('rid', $user->rid)
+                        ->update(
+                            [
+                                'hoid' => $hoid
+                            ]
+                        );
+                System::systemNotice([
+                    'from' => 0, 
+                    'to' => $user->rid, 
+                    'type' => 0, 
+                    'msg' => "你已累计运动 $user->count 次，授予您新的的称号: lv".$hoid
+                ]);
+            }
         }
     }
 }
