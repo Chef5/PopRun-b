@@ -11,7 +11,7 @@ use App\RMoments;
 use App\RUsers;
 use App\RMedals;
 use App\LinkUMs;
-use App\LInkUAs;
+use App\LinkUAs;
 use App\Http\Controllers\SystemController as System;
 
 class RunController extends Controller
