@@ -50,7 +50,7 @@ class RunController extends Controller
         // 活动成就
         $timeNow = date('Y-m-d H:i:s');
         $theLastestFinished = LinkUAs::join('r_activitys', 'link_u_as.acid', '=', 'r_activitys.acid')
-                ->select('link_u_as.rid', 'link_u_as.acid', 'link_u_as.isfinished', 'r_activitys.distance', 'r_activitys.period', 'r_activitys.meid')
+                ->select('link_u_as.rid', 'link_u_as.acid', 'link_u_as.isfinished', 'r_activitys.title', 'r_activitys.distance', 'r_activitys.period', 'r_activitys.meid')
                 ->where('r_activitys.period', '>', $timeNow)  //有效期内的活动
                 ->where('link_u_as.rid', $rid)  //已报名的活动
                 ->where('link_u_as.isfinished', 0) //未完成的活动
@@ -75,7 +75,7 @@ class RunController extends Controller
                 DB::commit();
                 System::systemNotice([
                     'to' => $theLastestFinished->rid,
-                    'msg' => "你新获得一枚勋章<".$medal->name.">"
+                    'msg' => "恭喜您挑战完成活动《".$theLastestFinished->title."》，获得一枚勋章<".$medal->name.">"
                 ]);
             } catch (\Throwable $th) {
                 DB::rollback();

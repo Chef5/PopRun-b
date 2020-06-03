@@ -36,6 +36,9 @@ class GrantHonor extends Command
         parent::__construct();
     }
 
+    // 初始数据-等级称号
+    protected $honors = ['赤脚', '草鞋', '棉鞋', '布鞋', '板鞋', '高跟鞋', '球鞋', '运动鞋', '跑鞋'];
+
     /**
      * Execute the console command.
      *
@@ -76,10 +79,8 @@ class GrantHonor extends Command
                             ]
                         );
                 System::systemNotice([
-                    'from' => 0, 
-                    'to' => $user->rid, 
-                    'type' => 0, 
-                    'msg' => "你已累计运动 $user->count 次，授予您新的的称号: lv".$hoid
+                    'to' => $user->rid,
+                    'msg' => "你已累计运动 $user->count 次，授予您新的的称号: lv".($hoid-1).' '.$this->honors[$hoid-1]
                 ]);
             }
         }
