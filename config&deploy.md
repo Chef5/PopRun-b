@@ -1,4 +1,4 @@
-## Config
+## 1. Config
 
 ### dev.run.conf
 
@@ -7,7 +7,7 @@ server {
         listen 80; 
         root /home/dev.run/PopRun-b/public;
         index index.html index.htm index.php;
-        server_name dev.run.nunet.cn;
+        server_name dev.run.example.com;
         # 404 重要
         location / {
                try_files $uri $uri/ /index.php?$query_string;
@@ -60,15 +60,15 @@ ALTER TABLE table_name CHANGE column_name VARCHAR(191) CHARACTER SET utf8mb4 COL
 ``` she
 APP_ENV=production
 APP_DEBUG=false
-APP_URL=http://dev.run.nunet.cn
+APP_URL=http://dev.run.example.com
 
 WX_APPID=
 WX_SECRET=
 
 TIMEZONE=Asia/Shanghai
-DB_DATABASE=poprun
+DB_DATABASE=
 DB_USERNAME=root
-DB_PASSWORD=root
+DB_PASSWORD=
 ```
 
 ## Deploy
@@ -97,5 +97,5 @@ systemctl restart php7.2-fpm
 
 ``` she
 cd /home/dev.run/PopRun-b
-git pull origin master
+git pull
 ```
