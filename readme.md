@@ -114,6 +114,15 @@ php artisan serve
 - 初始化用户等级数据：http://127.0.0.1:8000/admin/initData?key=123123&data=honors
 - 初始化勋章数据：http://127.0.0.1:8000/admin/initData?key=123123&data=medals
 
+
+### 2.6 创建活动和教程
+
+管理密码：123123
+
+- 创建活动：http://127.0.0.1:8000/addActivity
+
+- 创建课程：http://127.0.0.1:8000/addCourse
+
 ## LICENSE
 
 [MIT](LICENSE)
