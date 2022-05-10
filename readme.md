@@ -3,7 +3,7 @@
 这是我的毕业设计：“跑鸭”微信小程序-一款基于校园跑步的社交小程序
 技术栈：Laravel+MySQL
 
-- 前端项目：https://github.com/Patrick-Jun/PopRun
+- 前端项目：https://github.com/Chef5/PopRun
 
 ## 一、功能设计
 
@@ -69,7 +69,7 @@
 ### 2.1 克隆代码到本地
 
 ``` shell
-git clone https://github.com/Patrick-Jun/PopRun-b.git
+git clone https://github.com/Chef5/PopRun-b.git
 ```
 
 ### 2.2 配置.env
