@@ -105,11 +105,14 @@ php artisan migrate
 php artisan serve
 ```
 
-### 2.5 上线部署
+### 2.5 初始化数据
 
-完成以上步骤就可以在本地运行了，下面这是上线使用的
+完成以上步骤，在本地浏览器中打开以下链接进行数据初始化
 
-[config&deploy.md](./config&deploy.md)
+初始化数据位置，可以自己修改：`app/Http/Controllers/AdminController.php`
+
+- 初始化用户等级数据：http://127.0.0.1:8000/admin/initData?key=123123&data=honors
+- 初始化勋章数据：http://127.0.0.1:8000/admin/initData?key=123123&data=medals
 
 ## LICENSE
 
