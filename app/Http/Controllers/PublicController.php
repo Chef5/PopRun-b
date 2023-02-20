@@ -37,8 +37,8 @@ class PublicController extends Controller
             // $image = Image::make($photo)->save($file_path.$original_file_path);  //不能原图保存，服务器带宽获取太慢
             $original_file_path = '/'.$file_name.'-'.'1080x'.round(1080*$dfile->height()/$dfile->width()).'.'.$photo->getClientOriginalExtension();
             $image = Image::make($photo)->resize(1080, null, function ($constraint) {$constraint->aspectRatio();})->save($file_path.$original_file_path);
-            //处理返回网络url
-            $imgUrl = 'https://'.$request->server('HTTP_HOST').'/'.$file_relative_path;
+            // TODO: 处理返回网络url, 本地调试默认用的http://，体验版或者上线需要替换成https://
+            $imgUrl = 'http://'.$request->server('HTTP_HOST').'/'.$file_relative_path;
             $data = [
                 'name' => $photo->getClientOriginalName(),
                 'store' => $file_name,

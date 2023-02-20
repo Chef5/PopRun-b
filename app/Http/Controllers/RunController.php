@@ -40,9 +40,9 @@ class RunController extends Controller
                 ]);
                 $me->save();
                 System::systemNotice([
-                    'from' => 0, 
-                    'to' => $rid, 
-                    'type' => 0, 
+                    'from' => 0,
+                    'to' => $rid,
+                    'type' => 0,
                     'msg' => "你新获得一枚勋章<".$medal->name.">"
                 ]);
             }
@@ -81,14 +81,14 @@ class RunController extends Controller
                 DB::rollback();
             }
         }
-        
+
     }
-    /** 
+    /**
      * 获取随机一言
      */
     public function getHitokoto(Request $request){
-        if($request->has('type')) $url = 'http://v1.alapi.cn/api/hitokoto?format=json&type='.$request->type;
-        else $url = 'http://v1.alapi.cn/api/hitokoto?format=json';
+        // TODO: 这个地址是我转发的，我不确定什么时候可能会关服，如需要稳当，请使用随机一言接口官方：http://alapi.cn/api/view/1
+        $url = 'https://mood.1zdz.cn/api/hig/getHitokoto';
         $curl = curl_init();
         curl_setopt($curl, CURLOPT_URL, $url);
         curl_setopt($curl, CURLOPT_RETURNTRANSFER, 1);
@@ -98,15 +98,14 @@ class RunController extends Controller
             if($returnjson){
                 //整理返回数据
                 $json = json_decode($returnjson);
-                if($json->code == 200){
+                if($json->isSuccess){
                     $hitokoto = new Hitokoto();
-                    $hitokoto['hitokoto'] = $json->data->hitokoto;
+                    $hitokoto['hitokoto'] = $json->data->text;
                     $hitokoto['type'] = $json->data->type;
                     $hitokoto['from'] = $json->data->from;
                     $hitokoto['creator'] = $json->data->creator;
                     $hitokoto->save();
-                    $json->data->id = $hitokoto->id;
-                    array_push($data, $json->data);
+                    array_push($data, $hitokoto);
                     // return returnData(true, "操作成功", $json->data);
                     if(count($data) == 5) break;
                 }
@@ -121,7 +120,7 @@ class RunController extends Controller
         return returnData(true, "操作成功", $data);
     }
 
-    /**  
+    /**
      * 跑步开始
      */
     public function doStart(Request $request){
@@ -146,20 +145,20 @@ class RunController extends Controller
         }
     }
 
-    /**  
+    /**
      * 跑步结束
      */
     public function doEnd(Request $request){
         if($request->has('ruid')){
             $run = null;
-            if($request->has('distance') && 
-                $request->has('calorie') && 
-                $request->has('speed_top') && 
-                $request->has('speed_low') && 
-                $request->has('speed') && 
-                $request->has('time_end') && 
-                $request->has('time_run')&& 
-                $request->has('latitude_end')&& 
+            if($request->has('distance') &&
+                $request->has('calorie') &&
+                $request->has('speed_top') &&
+                $request->has('speed_low') &&
+                $request->has('speed') &&
+                $request->has('time_end') &&
+                $request->has('time_run')&&
+                $request->has('latitude_end')&&
                 $request->has('longitude_end'))
             {
                 try {
@@ -190,7 +189,7 @@ class RunController extends Controller
                 $data = RRuns::where('ruid', $run->id)->first();
                 // 检测：单次里程勋章
                 $this->checkMedals($request->rid, $request->distance);
-                
+
                 return returnData(true, '操作成功', $data);
             } catch (\Throwable $th) {
                 DB::rollBack();
@@ -201,7 +200,7 @@ class RunController extends Controller
         }
     }
 
-    /**  
+    /**
      * 分享到动态圈子
      */
     public function doShare(Request $request){
@@ -244,7 +243,7 @@ class RunController extends Controller
         }
     }
 
-    /** 
+    /**
      * 获取周榜
      */
     public function getWeekrank(Request $request){
@@ -258,12 +257,12 @@ class RunController extends Controller
                                 ->whereBetween('r_runs.created_at', [$timeStart, $timeEnd])
                                 ->select(
                                     DB::raw(
-                                        'r_users.rid, 
-                                        r_users.nickname, 
-                                        r_users.img, 
-                                        r_users.team, 
+                                        'r_users.rid,
+                                        r_users.nickname,
+                                        r_users.img,
+                                        r_users.team,
                                         cast(sum(r_runs.distance) as decimal(15,2)) as sumD,
-                                        sum(r_runs.time_run) as sumT, 
+                                        sum(r_runs.time_run) as sumT,
                                         cast(avg(r_runs.speed) as decimal(15,2)) as avgS'
                                         ))
                                 ->groupBy('r_runs.rid')
@@ -279,7 +278,7 @@ class RunController extends Controller
         }
     }
 
-    /** 
+    /**
      * 获取月榜
      */
     public function getMonthrank(Request $request){
@@ -293,12 +292,12 @@ class RunController extends Controller
                                 ->whereBetween('r_runs.created_at', [$timeStart, $timeEnd])
                                 ->select(
                                     DB::raw(
-                                        'r_users.rid, 
-                                        r_users.nickname, 
-                                        r_users.img, 
-                                        r_users.team, 
+                                        'r_users.rid,
+                                        r_users.nickname,
+                                        r_users.img,
+                                        r_users.team,
                                         cast(sum(r_runs.distance) as decimal(15,2)) as sumD,
-                                        sum(r_runs.time_run) as sumT, 
+                                        sum(r_runs.time_run) as sumT,
                                         cast(avg(r_runs.speed) as decimal(15,2)) as avgS'
                                         ))
                                 ->groupBy('r_runs.rid')
@@ -314,7 +313,7 @@ class RunController extends Controller
         }
     }
 
-    /** 
+    /**
      * 获取排行榜：周榜，月榜合并接口 type:0周榜 1月榜
      */
     public function getRanking(Request $request){
@@ -333,12 +332,12 @@ class RunController extends Controller
                                 ->whereBetween('r_runs.created_at', [$timeStart, $timeEnd])
                                 ->select(
                                     DB::raw(
-                                        'r_users.rid, 
-                                        r_users.nickname, 
-                                        r_users.img, 
-                                        r_users.team, 
+                                        'r_users.rid,
+                                        r_users.nickname,
+                                        r_users.img,
+                                        r_users.team,
                                         cast(sum(r_runs.distance) as decimal(15,2)) as sumD,
-                                        sum(r_runs.time_run) as sumT, 
+                                        sum(r_runs.time_run) as sumT,
                                         cast(avg(r_runs.speed) as decimal(15,2)) as avgS'
                                         ))
                                 ->groupBy('r_runs.rid')
@@ -353,8 +352,8 @@ class RunController extends Controller
             return returnData(false, '缺少team校区');
         }
     }
-    
-    /** 
+
+    /**
      * 获取个人排行榜信息：周榜，月榜合并接口 type:0周榜 1月榜
      */
     public function getMyRanking(Request $request){
@@ -374,12 +373,12 @@ class RunController extends Controller
                                 ->whereBetween('r_runs.created_at', [$timeStart, $timeEnd])
                                 ->select(
                                     DB::raw(
-                                        'r_users.rid, 
-                                        r_users.nickname, 
-                                        r_users.img, 
-                                        r_users.team, 
+                                        'r_users.rid,
+                                        r_users.nickname,
+                                        r_users.img,
+                                        r_users.team,
                                         cast(sum(r_runs.distance) as decimal(15,2)) as sumD,
-                                        sum(r_runs.time_run) as sumT, 
+                                        sum(r_runs.time_run) as sumT,
                                         cast(avg(r_runs.speed) as decimal(15,2)) as avgS'
                                         // rank() over(order by sumD) rank'
                                         ))
@@ -403,7 +402,7 @@ class RunController extends Controller
         }
     }
 
-    /**  
+    /**
      * 通过id获取某次运动
      */
     public function getRunById(Request $request){
@@ -424,7 +423,7 @@ class RunController extends Controller
         }
     }
 
-    /** 
+    /**
      * 获取个人运动列表
      */
     public function getMyRuns(Request $request){
@@ -442,7 +441,7 @@ class RunController extends Controller
                 //             ->skip(($pageindex-1)*$pagesize)
                 //             ->take($pagesize)
                 //             ->get();
-                            
+
                 $runs = RRuns::where('rid', $request->rid)
                             ->orderBy('created_at', 'desc')
                             ->skip(($pageindex-1)*$pagesize)
@@ -471,7 +470,7 @@ class RunController extends Controller
         }
     }
 
-    /** 
+    /**
      * 获取个人运动数据统计
      */
     public function getMyRunsData(Request $request){
@@ -484,7 +483,7 @@ class RunController extends Controller
                                     count(*) as times,
                                     cast(sum(distance) as decimal(15,2)) as sumD,
                                     cast(max(distance) as decimal(15,2)) as maxD,
-                                    sum(time_run) as sumT, 
+                                    sum(time_run) as sumT,
                                     max(time_run) as maxT,
                                     cast(avg(speed) as decimal(15,2)) as avgS,
                                     max(speed) as maxS,
