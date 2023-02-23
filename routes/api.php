@@ -36,7 +36,7 @@ Route::prefix('main')->group(function () {
     //获取用户openid
     Route::post('/getOpenid', [PublicController::class, 'getOpenid']);
     //用户授权注册
-    Route::post('/wxAuth', [RUsersController::class, 'regster']);
+    Route::post('/wxAuth', [RUsersController::class, 'register']);
     // 图片上传
     Route::post('/uploadImg', [PublicController::class, 'uploadImg']);
     // 获取称号列表

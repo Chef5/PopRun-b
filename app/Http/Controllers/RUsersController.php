@@ -18,7 +18,7 @@ class RUsersController extends Controller
     /**
      * 用户授权注册
      */
-    public function regster(Request $request){
+    public function register(Request $request){
         if ($request->has('openid')) {
             $user = new RUsers();
             $linkhonor = new LinkUHs();
@@ -61,7 +61,7 @@ class RUsersController extends Controller
             return returnData(false, '缺少openid');
         }
     }
-    
+
     /**
      * 获取用户信息
      */
@@ -87,7 +87,7 @@ class RUsersController extends Controller
         }
     }
 
-    /** 
+    /**
      * 获取用户信息（含勋章称号）
      */
     public function getUserAll(Request $request){
@@ -116,8 +116,8 @@ class RUsersController extends Controller
         }
     }
 
-    
-    /** 
+
+    /**
      * 获取已获称号
      */
     public function getHonor(Request $request){
@@ -138,7 +138,7 @@ class RUsersController extends Controller
         }
     }
 
-    /** 
+    /**
      * 获取已获勋章
      */
     public function getMedal(Request $request){
@@ -157,10 +157,10 @@ class RUsersController extends Controller
         }else{
             return returnData(false, '缺少rid', null);
         }
-        
+
     }
 
-    /** 
+    /**
      * 上传头像
      */
     public function uploadImg(Request $request){
@@ -251,7 +251,7 @@ class RUsersController extends Controller
         }
     }
 
-    /** 
+    /**
      * 隐私设置
      */
     public function doSettings(Request $request){
@@ -278,7 +278,7 @@ class RUsersController extends Controller
         }
     }
 
-    /** 
+    /**
      * 隐私设置-重置
      */
     public function resetSettings(Request $request){
@@ -293,7 +293,7 @@ class RUsersController extends Controller
         }
     }
 
-    /** 
+    /**
      * 个人主页访问权限
      */
     public function getProvicy(Request $request){
