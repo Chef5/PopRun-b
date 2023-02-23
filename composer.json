@@ -24,12 +24,12 @@
         "phpunit/phpunit": "^10"
     },
     "config": {
+        "platform-check": false,
         "optimize-autoloader": true,
         "preferred-install": "dist",
         "sort-packages": true,
         "platform": {
-            "php": "8.1",
-            "platform-check": false
+            "php": "8.1"
         }
     },
     "extra": {
