@@ -69,8 +69,10 @@ class PublicController extends Controller
     }
     // 获取openid
     public function getOpenid(Request $request){
+        $appid = $request->has('appid') ? $request->appid : env('WX_APPID');
+        $secret = $request->has('secret') ? $request->secret : env('WX_SECRET');
         if($request->has('code')){
-            $url = 'https://api.weixin.qq.com/sns/jscode2session?appid='.env('WX_APPID').'&secret='.env('WX_SECRET').'&js_code='.$request->code.'&grant_type=authorization_code';
+            $url = 'https://api.weixin.qq.com/sns/jscode2session?appid='.$appid.'&secret='.$secret.'&js_code='.$request->code.'&grant_type=authorization_code';
             $curl = curl_init();
             curl_setopt($curl, CURLOPT_URL, $url);
             curl_setopt($curl, CURLOPT_RETURNTRANSFER, 1);
