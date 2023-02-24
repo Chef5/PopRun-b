@@ -331,7 +331,12 @@ class RUsersController extends Controller
      */
     public function getSchools(Request $request){
         try {
-            return returnData(true, '操作成功', RUsers::where('team', '<>', 'system')->select('team')->distinct()->get());
+            return returnData(true, '操作成功', RUsers::where('team', '<>', 'system')
+                ->whereNotIn('team', ['system', ''])
+                ->whereNotNull('team')
+                ->select('team')
+                ->distinct()
+                ->get());
         } catch (\Throwable $th) {
             return returnData(false, $th);
         }
