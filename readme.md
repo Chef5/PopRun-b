@@ -3,6 +3,10 @@
 这是我的毕业设计：“跑鸭”微信小程序-一款基于校园跑步的社交小程序
 技术栈：Laravel+MySQL
 
+**环境：PHP：7.2~8.0、Laravel: 6.x**
+
+如果你是PHP：8.1+，可以切到分支 [php-8.1](https://github.com/Chef5/PopRun-b/tree/php-8.1) 使用，该分支用的`Laravel9`
+
 - 前端项目：https://github.com/Chef5/PopRun
 
 ## 一、功能设计
@@ -67,7 +71,10 @@
 ## 二、如何使用
 
 要求：
-PHP: 7.2+
+PHP: 7.2~8.0
+MySQL: 随便
+
+> 如果你是PHP：8.1+，使用分支 [php-8.1](https://github.com/Chef5/PopRun-b/tree/php-8.1) 的代码
 
 **以下步骤一步一步弄，顺序不能乱，通常是能一次性运行起来的！**
 
