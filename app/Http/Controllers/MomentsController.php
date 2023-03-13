@@ -66,7 +66,7 @@ class MomentsController extends Controller
                         return returnData(true, "操作成功", $data);
                     } catch (\Throwable $th) {
                         DB::rollback();
-                        return returnData(false, $th);
+                        returnData(false, $th->getMessage());
                     }
                 } else {
                     return returnData(false, '不存在该用户', null);
@@ -94,7 +94,7 @@ class MomentsController extends Controller
                 return returnData(true, "操作成功", null);
             } catch (\Throwable $th) {
                 DB::rollback(); //回滚
-                return returnData(false, $th);
+                returnData(false, $th->getMessage());
             }
         } else {
             return returnData(false, "缺rid或者moid", null);
@@ -129,7 +129,7 @@ class MomentsController extends Controller
                 return returnData(true, "操作成功", $data);
             } catch (\Throwable $th) {
                 DB::rollback();
-                return returnData(false, $th);
+                returnData(false, $th->getMessage());
             }
         } else {
             return returnData(false, "缺rid、moid或者评论内容", null);
@@ -146,7 +146,7 @@ class MomentsController extends Controller
                 return returnData(true, "操作成功", null);
             } catch (\Throwable $th) {
                 DB::rollback(); //回滚
-                return returnData(false, $th);
+                returnData(false, $th->getMessage());
             }
         }else{
             return returnData(false, "缺coid", null);
@@ -175,7 +175,7 @@ class MomentsController extends Controller
                 return returnData(true, "操作成功", $like);
             } catch (\Throwable $th) {
                 DB::rollback();
-                return returnData(false, $th);
+                returnData(false, $th->getMessage());
             }
         } else {
             return returnData(false, "缺rid或者moid", null);
@@ -190,7 +190,7 @@ class MomentsController extends Controller
                 LinkULikeMs::where('rid', $request->rid)->where('moid', $request->moid)->delete();
                 return returnData(true, "操作成功", null);
             } catch (\Throwable $th) {
-                return returnData(false, $th);
+                returnData(false, $th->getMessage());
             }
         } else {
             return returnData(false, "缺rid或者moid", null);
@@ -260,7 +260,7 @@ class MomentsController extends Controller
                 ];
                 return returnData(true, "操作成功", $re);
             } catch (\Throwable $th) {
-                return returnData(false, $th);
+                returnData(false, $th->getMessage());
             }
         } else {
             return returnData(false, "缺少rid", null);
@@ -323,7 +323,7 @@ class MomentsController extends Controller
             ];
             return returnData(true, "操作成功", $re);
         } catch (\Throwable $th) {
-            return returnData(false, $th);
+            returnData(false, $th->getMessage());
         }
     }
 
@@ -372,7 +372,7 @@ class MomentsController extends Controller
                 ];
                 return returnData(true, "操作成功", $data);
             } catch (\Throwable $th) {
-                return returnData(false, $th);
+                returnData(false, $th->getMessage());
             }
         } else {
             return returnData(false, "缺少moid", null);
@@ -434,11 +434,11 @@ class MomentsController extends Controller
                 ];
                 return returnData(true, '操作成功', $data);
             } catch (\Throwable $th) {
-                return returnData(false, $th);
+                returnData(false, $th->getMessage());
             }
         }else{
             return returnData(false, "最近没有点赞数据", null);
         }
-           
+
     }
 }

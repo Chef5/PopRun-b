@@ -9,7 +9,7 @@ use App\RUsers;
 
 class SystemController extends Controller
 {
-    /** 
+    /**
      * 生成系统通知
      * 1.$obj['from']：默认系统发出
      * 2.$obj['to']：需要指定！
@@ -49,7 +49,7 @@ class SystemController extends Controller
         }
     }
 
-    /** 
+    /**
      * 获取系统通知
      */
     public function getNotice(Request $request){
@@ -63,7 +63,7 @@ class SystemController extends Controller
                                         ->get();
                         return returnData(true, '操作成功', $data->toArray());
                     } catch (\Throwable $th) {
-                        return returnData(false, $th);
+                        return returnData(false, $th->getMessage());
                     }
                 }else{
                     try {
@@ -72,7 +72,7 @@ class SystemController extends Controller
                                         ->get();
                         return returnData(true, '操作成功', $data->toArray());
                     } catch (\Throwable $th) {
-                        return returnData(false, $th);
+                        return returnData(false, $th->getMessage());
                     }
                 }
             }else{
@@ -83,7 +83,7 @@ class SystemController extends Controller
                                         ->get();
                         return returnData(true, '操作成功', $data->toArray());
                     } catch (\Throwable $th) {
-                        return returnData(false, $th);
+                        return returnData(false, $th->getMessage());
                     }
                 }else{
                     try {
@@ -91,7 +91,7 @@ class SystemController extends Controller
                                         ->get();
                         return returnData(true, '操作成功', $data->toArray());
                     } catch (\Throwable $th) {
-                        return returnData(false, $th);
+                        return returnData(false, $th->getMessage());
                     }
                 }
             }
@@ -100,7 +100,7 @@ class SystemController extends Controller
         }
     }
 
-    /**  
+    /**
      * 阅读通知
      */
     public function readNotice(Request $request){
@@ -115,14 +115,14 @@ class SystemController extends Controller
                 return returnData(true, '操作成功', $data->toArray());
             } catch (\Throwable $th) {
                 DB::rollBack();
-                return returnData(false, $th);
+                return returnData(false, $th->getMessage());
             }
         }else{
             return returnData(false, '缺少noid');
         }
     }
-    
-    /**  
+
+    /**
      * 删除通知
      */
     public function delNotice(Request $request){
@@ -136,7 +136,7 @@ class SystemController extends Controller
                 return returnData(true, '操作成功');
             } catch (\Throwable $th) {
                 DB::rollBack();
-                return returnData(false, $th);
+                return returnData(false, $th->getMessage());
             }
         }else{
             return returnData(false, '缺少noid');
