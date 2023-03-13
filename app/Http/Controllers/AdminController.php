@@ -26,7 +26,7 @@ class AdminController extends Controller
         ['name' => '运动鞋', 'desc' => 'lv7'], //800
         ['name' => '跑鞋', 'desc' => 'lv8']    //1000
     ];
-    // 初始数据-勋章 type:0不可重复获得 1可重复获得 
+    // 初始数据-勋章 type:0不可重复获得 1可重复获得
     protected $medals = [
         ['type'=>0, 'name'=>'1星跑者', 'mkey'=>'star_1_act', 'img'=>'star_1_act.png', 'desc' => '单次运动里程达5km'],
         ['type'=>0, 'name'=>'2星跑者', 'mkey'=>'star_2_act', 'img'=>'star_2_act.png', 'desc' => '单次运动里程达10km'],
@@ -74,7 +74,7 @@ class AdminController extends Controller
                         return returnData(true, "称号初始化完成", null);
                     } catch (\Throwable $th) {
                         DB::rollBack();
-                        return returnData(false, $th);
+                        return returnData(false, $th->getMessage());
                     }
                 }else if($request->data == "medals"){ // 初始化勋章
                     $filepath = 'http://'.$request->server('HTTP_HOST').'/resources/medals/';
@@ -91,10 +91,10 @@ class AdminController extends Controller
                         return returnData(true, "勋章初始化完成", null);
                     } catch (\Throwable $th) {
                         DB::rollBack();
-                        return returnData(false, $th);
+                        return returnData(false, $th->getMessage());
                     }
                 }
-                
+
             }else{
                 return returnData(false, 'key错误，非法操作', null);
             }
@@ -139,7 +139,7 @@ class AdminController extends Controller
                 $rMedals['meid'] = $rMedals->id; unset($rMedals['id']); //修改id为meid，与数据库保持一致
                 return returnData(true, '上传成功', $rMedals);
             } catch (\Throwable $th) {
-                return returnData(false, $th);
+                return returnData(false, $th->getMessage());
             }
         }else{
             return returnData(false, "缺少参数", $request->all());
@@ -174,7 +174,7 @@ class AdminController extends Controller
                     return returnData(true, '操作成功', Img::get());
                 } catch (\Throwable $th) {
                     DB::rollBack();
-                    return returnData(false, $th);
+                    return returnData(false, $th->getMessage());
                 }
             }else{
                 return returnData(false, 'key错误，非法操作', null);

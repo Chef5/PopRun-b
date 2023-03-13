@@ -138,7 +138,7 @@ class RunController extends Controller
                 return returnData(true, '操作成功', $data);
             } catch (\Throwable $th) {
                 DB::rollBack();
-                return returnData(false, $th);
+                return returnData(false, $th->getMessage());
             }
         }else{
             return returnData(false, '缺少rid');
@@ -172,7 +172,7 @@ class RunController extends Controller
                     return returnData(true, '操作成功', $data);
                 } catch (\Throwable $th) {
                     DB::rollBack();
-                    return returnData(false, $th);
+                    return returnData(false, $th->getMessage());
                 }
             }else{
                 return returnData(false, '缺少必须参数，已传参数见data', array_keys($request->all()));
@@ -193,7 +193,7 @@ class RunController extends Controller
                 return returnData(true, '操作成功', $data);
             } catch (\Throwable $th) {
                 DB::rollBack();
-                return returnData(false, $th);
+                return returnData(false, $th->getMessage());
             }
         }else{
             return returnData(false, '缺少ruid或者rid');
@@ -233,7 +233,7 @@ class RunController extends Controller
                     return returnData(true, '操作成功');
                 } catch (\Throwable $th) {
                     DB::rollBack();
-                    return returnData(false, $th);
+                    return returnData(false, $th->getMessage());
                 }
             }else{
                 return returnData(false, '您已经分享过了', '或者ruid和rid不匹配');
@@ -271,7 +271,7 @@ class RunController extends Controller
                                 ->get();
                 return returnData(true, "操作成功", $top100->toArray());
             } catch (\Throwable $th) {
-                return returnData(false, $th);
+                return returnData(false, $th->getMessage());
             }
         }else{
             return returnData(false, '缺少team校区');
@@ -306,7 +306,7 @@ class RunController extends Controller
                                 ->get();
                 return returnData(true, "操作成功", $top100->toArray());
             } catch (\Throwable $th) {
-                return returnData(false, $th);
+                return returnData(false, $th->getMessage());
             }
         }else{
             return returnData(false, '缺少team校区');
@@ -346,7 +346,7 @@ class RunController extends Controller
                                 ->get();
                 return returnData(true, "操作成功", $top100->toArray());
             } catch (\Throwable $th) {
-                return returnData(false, $th);
+                return returnData(false, $th->getMessage());
             }
         }else{
             return returnData(false, '缺少team校区');
@@ -395,7 +395,7 @@ class RunController extends Controller
                 }
                 return returnData(true, "操作成功", $re);
             } catch (\Throwable $th) {
-                return returnData(false, $th);
+                return returnData(false, $th->getMessage());
             }
         }else{
             return returnData(false, '缺少rid');
@@ -416,7 +416,7 @@ class RunController extends Controller
                 //                     ->first();
                 return returnData(true, '操作成功', $run);
             } catch (\Throwable $th) {
-                return returnData(false, $th);
+                return returnData(false, $th->getMessage());
             }
         }else{
             return returnData(false, '缺少ruid');
@@ -463,7 +463,7 @@ class RunController extends Controller
                 ];
                 return returnData(true, "操作成功", $re);
             } catch (\Throwable $th) {
-                return returnData(false, $th);
+                return returnData(false, $th->getMessage());
             }
         }else{
             return returnData(false, "缺少rid", null);
@@ -492,7 +492,7 @@ class RunController extends Controller
                             ->get();
                 return returnData(true, "操作成功", $data[0]);
             } catch (\Throwable $th) {
-                return returnData(false, $th);
+                return returnData(false, $th->getMessage());
             }
         }else{
             return returnData(false, "缺少rid", null);
@@ -514,7 +514,7 @@ class RunController extends Controller
                 return returnData(true, "操作成功", null);
             } catch (\Throwable $th) {
                 DB::rollback(); //回滚
-                return returnData(false, $th);
+                return returnData(false, $th->getMessage());
             }
         }else{
             return returnData(false, "缺rid或者ruid", null);

@@ -14,7 +14,7 @@ use App\LinkUAs;
 
 class ActivitysController extends Controller
 {
-    /** 
+    /**
      * 创建活动
      */
     public function doActivity(Request $request){
@@ -50,12 +50,12 @@ class ActivitysController extends Controller
                         foreach($request->imgs as $img){
                             $img['key'] = "activity";
                             $img['key_id'] = $activity->id;
-    
+
                             $activityImg = new Images();
                             $activityImg->fillable(array_keys($img));
                             $activityImg->fill($img);
                             $activityImg->save();
-    
+
                             $original[$i] = $img['original'];
                             $thumbnail[$i] = $img['thumbnail'];
                             $i++;
@@ -74,14 +74,14 @@ class ActivitysController extends Controller
                 return returnData(true, "操作成功", $data);
             } catch (\Throwable $th) {
                 DB::rollBack();
-                return returnData(false, $th);
+                return returnData(false, $th->getMessage());
             }
         }else{
             return returnData(false, "标题、描述、封面图、勋章id缺一不可", null);
         }
     }
 
-    /** 
+    /**
      * 获取活动列表
      */
     public function getList(Request $request){
@@ -112,11 +112,11 @@ class ActivitysController extends Controller
             ];
             return returnData(true, "操作成功", $re);
         } catch (\Throwable $th) {
-            return returnData(false, $th);
+            return returnData(false, $th->getMessage());
         }
     }
 
-    /** 
+    /**
      * 获取轮播活动
      */
     public function getSwipper(Request $request){
@@ -141,7 +141,7 @@ class ActivitysController extends Controller
             }
             return returnData(true, "操作成功", $data);
         } catch (\Throwable $th) {
-            return returnData(false, $th);
+            return returnData(false, $th->getMessage());
         }
     }
 
@@ -160,7 +160,7 @@ class ActivitysController extends Controller
                     $original []= $img->original;
                     $thumbnail []= $img->thumbnail;
                 }
-                $activity['imgs'] = [ 
+                $activity['imgs'] = [
                     'original' => $original,
                     'thumbnail' => $thumbnail
                 ];
@@ -174,14 +174,14 @@ class ActivitysController extends Controller
                  $activity['medal'] = RMedals::where('meid', $activity['meid'])->first();
                 return returnData(true, "操作成功", $activity);
             } catch (\Throwable $th) {
-                return returnData(false, $th);
+                return returnData(false, $th->getMessage());
             }
         }else{
             return returnData(false, "缺少acid", null);
         }
     }
 
-    /** 
+    /**
      * 创建课程
      */
     public function doCourse(Request $request){
@@ -213,14 +213,14 @@ class ActivitysController extends Controller
                 return returnData(true, "操作成功", $data);
             } catch (\Throwable $th) {
                 DB::rollBack();
-                return returnData(false, $th);
+                return returnData(false, $th->getMessage());
             }
         }else{
             return returnData(false, "缺少标题、内容或者封面图", null);
         }
     }
 
-    /** 
+    /**
      * 获取课程列表
      */
     public function getCourses(Request $request){
@@ -242,11 +242,11 @@ class ActivitysController extends Controller
             }
             return returnData(true, "操作成功", $data);
         } catch (\Throwable $th) {
-            return returnData(false, $th);
+            return returnData(false, $th->getMessage());
         }
     }
-    
-    /** 
+
+    /**
      * 获取课程详细
      */
     public function getCourseDetail(Request $request){
@@ -261,14 +261,14 @@ class ActivitysController extends Controller
                 ];
                 return returnData(true, "操作成功", $course);
             } catch (\Throwable $th) {
-                return returnData(false, $th);
+                return returnData(false, $th->getMessage());
             }
         }else{
             return returnData(false, "缺少课程rcid");
         }
     }
 
-    /** 
+    /**
      * 报名参加活动
      */
     public function signActivity(Request $request){
@@ -285,7 +285,7 @@ class ActivitysController extends Controller
                     return returnData(true, "报名成功", $sign);
                 } catch (\Throwable $th) {
                     DB::rollBack();
-                    return returnData(false, $th);
+                    return returnData(false, $th->getMessage());
                 }
             }else{
                 return returnData(false, "您已经报名过了", $signlog);
@@ -295,7 +295,7 @@ class ActivitysController extends Controller
         }
     }
 
-    /** 
+    /**
      * 查询用户是否已报名
      */
     public function signActivityCheck(Request $request){
@@ -311,7 +311,7 @@ class ActivitysController extends Controller
         }
     }
 
-    /** 
+    /**
      * 获取已报名人数
      */
     public function getSignNum(Request $request){

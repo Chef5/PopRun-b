@@ -55,7 +55,7 @@ class RUsersController extends Controller
                 return returnData(true, '操作成功', $data);
             } catch (\Throwable $th) {
                 DB::rollBack();
-                return returnData(false, $th);
+                return returnData(false, $th->getMessage());
             }
         }else{
             return returnData(false, '缺少openid');
@@ -73,13 +73,13 @@ class RUsersController extends Controller
                     if($user) return returnData(true, '操作成功', $user);
                     else return returnData(false, '未注册');
                 } catch (\Throwable $th) {
-                    return returnData(false, $th);
+                    return returnData(false, $th->getMessage());
                 }
             }else{
                 try {
                     return returnData(true, '操作成功', RUsers::where('rid', $request->rid)->first());
                 } catch (\Throwable $th) {
-                    return returnData(false, $th);
+                    return returnData(false, $th->getMessage());
                 }
             }
         }else{
@@ -109,7 +109,7 @@ class RUsersController extends Controller
                         ->get();
                 return returnData(true, '操作成功', $data);
             // } catch (\Throwable $th) {
-            //     return returnData(false, $th);
+            //     return returnData(false, $th->getMessage());
             // }
         }else{
             return returnData(false, '缺少rid', null);
@@ -131,7 +131,7 @@ class RUsersController extends Controller
                         ->first();
                 return returnData(true, '操作成功', $data);
             } catch (\Throwable $th) {
-                return returnData(false, $th);
+                return returnData(false, $th->getMessage());
             }
         }else{
             return returnData(false, '缺少rid', null);
@@ -152,7 +152,7 @@ class RUsersController extends Controller
                         ->get();
                 return returnData(true, '操作成功', $data);
             } catch (\Throwable $th) {
-                return returnData(false, $th);
+                return returnData(false, $th->getMessage());
             }
         }else{
             return returnData(false, '缺少rid', null);
@@ -189,7 +189,7 @@ class RUsersController extends Controller
                 //返回数据
                 return returnData(true, '上传成功', ['url' => $fileurl]);
             } catch (\Throwable $th) {
-                return returnData(false, $th);
+                return returnData(false, $th->getMessage());
             }
         }else{
             return returnData(false, "缺少参数", $request->all());
@@ -224,7 +224,7 @@ class RUsersController extends Controller
                     return returnData(false, '不存在该用户', null);
                 }
             } catch (\Throwable $th) {
-                return returnData(false, $th);
+                return returnData(false, $th->getMessage());
             }
         }else{
             return returnData(false, '缺少openid或rid', null);
@@ -244,7 +244,7 @@ class RUsersController extends Controller
                 }
                 return returnData(true, "操作成功", null);
             } catch (\Throwable $th) {
-                return returnData(false, $th);
+                return returnData(false, $th->getMessage());
             }
         }else{
             return returnData(false, '缺少openid或rid', null);
@@ -271,7 +271,7 @@ class RUsersController extends Controller
                     return returnData(false, '读取数据库失败', null);
                 }
             } catch (\Throwable $th) {
-                return returnData(false, $th);
+                return returnData(false, $th->getMessage());
             }
         }else{
             return returnData(false, '缺少rid', null);
@@ -301,7 +301,7 @@ class RUsersController extends Controller
             try {
                 return returnData(true, '操作成功', RSettings::where('rid', $request->rid)->first());
             } catch (\Throwable $th) {
-                return returnData(false, $th);
+                return returnData(false, $th->getMessage());
             }
         }else{
             return returnData(false, '缺少rid');
@@ -338,7 +338,7 @@ class RUsersController extends Controller
                 ->distinct()
                 ->get());
         } catch (\Throwable $th) {
-            return returnData(false, $th);
+            return returnData(false, $th->getMessage());
         }
     }
 }
